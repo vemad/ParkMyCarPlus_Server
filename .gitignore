@@ -10,3 +10,19 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+.gradle/1.11/taskArtifacts/cache.properties
+
+.gradle/1.11/taskArtifacts/cache.properties.lock
+
+.gradle/1.11/taskArtifacts/fileHashes.bin
+
+.gradle/1.11/taskArtifacts/fileSnapshots.bin
+
+.gradle/1.11/taskArtifacts/outputFileStates.bin
+
+.gradle/1.11/taskArtifacts/taskArtifacts.bin
+
+build/libs/gs-rest-service-0.1.0.jar.original
+
+build/tmp/jar/MANIFEST.MF
