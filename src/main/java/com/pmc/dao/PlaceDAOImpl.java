@@ -36,10 +36,6 @@ public class PlaceDAOImpl implements PlaceDAO{
     }
 
     @Override
-<<<<<<< HEAD
-    public List<Place> findPlacesByPosition(double longitude, double latitude, int radius){ //TODO: optimization request
-        return null;
-=======
     public List<Place> findPlacesByPosition(double longitude, double latitude, int radius){ //TODO: maybe optimization request
         String request = "FROM Place WHERE " +
                     radius + " > 12756274 * ATAN(SQRT(SIN((latitude - " + latitude + " ) * PI() / 180/2) * SIN((latitude - " + latitude + " ) * PI() / 180/2) + " +
@@ -49,6 +45,5 @@ public class PlaceDAOImpl implements PlaceDAO{
                     "COS(" + latitude + " * PI() / 180) * COS(latitude * PI() / 180) * " +
                     "POW(SIN((longitude - " + longitude + " ) * PI() / 180/2),2))))";
         return (List<Place>)hibernateTemplate.find(request);
->>>>>>> FETCH_HEAD
     }
 }
