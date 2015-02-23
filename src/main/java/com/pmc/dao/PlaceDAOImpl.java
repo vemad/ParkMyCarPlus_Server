@@ -37,6 +37,6 @@ public class PlaceDAOImpl implements PlaceDAO{
 
     @Override
     public List<Place> findPlacesByPosition(double longitude, double latitude, int radius){ //TODO: optimization request
-        hibernateTemplate
+        return null;
     }
 }
