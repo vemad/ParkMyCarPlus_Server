@@ -7,6 +7,10 @@ import com.util.*;
 
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,13 +27,20 @@ public class PlaceController {
         return placeDAO.findById(id);
     }
 
-    @RequestMapping(value ="/place/released", method = RequestMethod.POST, consumes = "application/json")
-    @ResponseBody
-    public Message4Client placeToRelease(@RequestBody Position body ){
+    @RequestMapping(value ="/place/released", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<Message4Client> placeReleased(@RequestBody Position body ){
 
         //TODO Implement this method
-        return new Message4Client(1.23,10);
+        return new ResponseEntity(new Message4Client("OK"), new HttpHeaders(), HttpStatus.OK);
     }
+
+    @RequestMapping(value ="/place/taken", method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<Message4Client> placeTaken(@RequestBody Position body ){
+
+        //TODO Implement this method
+        return new ResponseEntity(new Message4Client("OK"), new HttpHeaders(), HttpStatus.OK);
+    }
+
 
     @RequestMapping("/places")
     public List<Place> listPlacesByPosition(@RequestParam(value="longitude") double longitude,

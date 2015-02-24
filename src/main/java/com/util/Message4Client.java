@@ -5,23 +5,20 @@ package com.util;
  */
 public class Message4Client {
 
-    protected final Double latitude;
-    protected final Integer message;
+    protected String message;
 
-    public Message4Client(Double latitude, Integer message) {
-        this.latitude = latitude;
+    public Message4Client(String message) {
         this.message = message;
     }
 
-    public double getLatitude() {
-        return latitude;
+
+    public String getMessage() {
+        return message;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "latitude=" + latitude +
-                ", message='" + message + '\'' +
-                '}';
+    public Message4Client setMessage(String message) {
+        this.message = message;
+        return this;
     }
+
 }
