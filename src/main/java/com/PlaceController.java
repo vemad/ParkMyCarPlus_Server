@@ -3,12 +3,11 @@ package com;
 import com.pmc.config.DAOManager;
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
+import com.util.*;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PlaceController {
@@ -22,6 +21,14 @@ public class PlaceController {
         PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
 
         return placeDAO.findById(id);
+    }
+
+    @RequestMapping(value ="/place/released", method = RequestMethod.POST, consumes = "application/json")
+    @ResponseBody
+    public Message4Client placeToRelease(@RequestBody Position body ){
+
+        //TODO Implement this method
+        return new Message4Client(1.23,10);
     }
 
     @RequestMapping("/places")
