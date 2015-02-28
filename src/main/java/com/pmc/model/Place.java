@@ -1,6 +1,9 @@
 package com.pmc.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -11,6 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="place")
+@JsonIgnoreProperties({"taken"})
 public class Place implements Serializable{
 
     @Id
@@ -22,6 +26,9 @@ public class Place implements Serializable{
      */
     private double latitude;
     private double longitude;
+
+    @JsonProperty("isTaken")
+    private boolean isTaken;
 
 
     public int getId() {
@@ -45,8 +52,14 @@ public class Place implements Serializable{
         this.longitude = longitude;
         return this;
     }
+    public boolean isTaken() { return isTaken; }
 
-    public void setId(int id) {
-        this.id = id;
+    public Place takePlace() {
+        this.isTaken = true;
+        return this;
+    }
+    public Place releasePlace() {
+        this.isTaken = false;
+        return this;
     }
 }

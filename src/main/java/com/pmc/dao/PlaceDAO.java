@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface PlaceDAO extends DAO{
     public Place findById(int id);
-    public Place savePlace();
-    public List<Place> findPlacesByPosition(double longitude, double latitude, int radius);
+    public Place savePlace(Place place);
+    public List<Place> findPlacesByPosition(double latitude, double longitude, int radius);
+    public List<Place> findNearestPlaces(double latitude, double longitude, int maxRadius);
 }
