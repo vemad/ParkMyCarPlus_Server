@@ -18,7 +18,7 @@ import com.pmc.model.Place;
 public class AppConfig {
 
     @Bean
-    public PlaceDAO personDao() {
+    public PlaceDAO placeDao() {
         return new PlaceDAOImpl();
     }
 

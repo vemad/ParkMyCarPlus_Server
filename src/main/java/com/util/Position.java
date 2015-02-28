@@ -1,7 +1,8 @@
 package com.util;
 
 /**
- * Created by stephaneki on 24/02/15.
+ * Object used to collect position send in the body request sent by the client
+ * @author stephaneki
  */
 public class Position {
 
@@ -26,11 +27,4 @@ public class Position {
         return longitude;
     }
 
-    @Override
-    public String toString() {
-        return "{" +
-                "latitude=" + latitude +
-                ", longitude=" + longitude +
-                '}';
-    }
 }

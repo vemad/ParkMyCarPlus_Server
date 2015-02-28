@@ -20,6 +20,11 @@ public class PlaceDAOImpl implements PlaceDAO{
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
+    /**
+     *
+     * @param id Id of the place to be found
+     * @return the place founded or null otherwise
+     */
     @Override
     public Place findById(int id) {
         Place place = hibernateTemplate.get(Place.class, id);
@@ -27,6 +32,7 @@ public class PlaceDAOImpl implements PlaceDAO{
     }
 
     @Override
+    //TODO Modify this method to create a realistic place and save it
     public Place savePlace(){
         Place place = new Place();
         place.setLatitude(1.2);
@@ -35,8 +41,14 @@ public class PlaceDAOImpl implements PlaceDAO{
         return place;
     }
 
+    /**
+     * Desc TODO Fill the description
+     * @param   latitude
+     * @param   longitude
+     * @return   List of all the places contained in the circle specified
+     */
     @Override
-    public List<Place> findPlacesByPosition(double longitude, double latitude, int radius){ //TODO: maybe optimization request
+    public List<Place> findPlacesByPosition(double longitude, double latitude, int radius){ //TODO: The request might be optimized
         String request = "FROM Place WHERE " +
                     radius + " > 12756274 * ATAN(SQRT(SIN((latitude - " + latitude + " ) * PI() / 180/2) * SIN((latitude - " + latitude + " ) * PI() / 180/2) + " +
                     "COS( " + latitude + " * PI() / 180) * COS(latitude * PI() / 180) * " +
