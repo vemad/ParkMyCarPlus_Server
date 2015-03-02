@@ -4,11 +4,13 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import com.pmc.dao.PlaceDAOImpl;
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
@@ -16,7 +18,6 @@ import com.pmc.model.Place;
 @Configuration
 @EnableTransactionManagement
 public class AppConfig {
-
     @Bean
     public PlaceDAO placeDao() {
         return new PlaceDAOImpl();
@@ -43,10 +44,5 @@ public class AppConfig {
         dataSource.setPassword("pmcServerPwd");
 
         return dataSource;
-    }
-
-    @Bean
-    public HibernateTransactionManager hibTransMan(){
-        return new HibernateTransactionManager(sessionFactory());
     }
 }

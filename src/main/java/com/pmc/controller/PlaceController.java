@@ -1,6 +1,6 @@
-package com;
+package com.pmc.controller;
 
-import com.pmc.config.DAOManager;
+import com.pmc.dao.DAOManager;
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
 import com.util.*;
@@ -10,7 +10,6 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 /**

@@ -1,7 +1,6 @@
-package com.pmc.config;
+package com.pmc.dao;
 
-import com.pmc.dao.DAO;
-import com.pmc.dao.PlaceDAO;
+import com.pmc.config.AppConfig;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
