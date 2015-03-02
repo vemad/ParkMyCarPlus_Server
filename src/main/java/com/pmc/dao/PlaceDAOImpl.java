@@ -32,10 +32,20 @@ public class PlaceDAOImpl implements PlaceDAO{
     }
 
     @Override
-
     public Place savePlace(Place place){
         hibernateTemplate.saveOrUpdate(place);
         return place;
+    }
+
+    @Override
+    public boolean deleteById(int id){
+        try{
+            hibernateTemplate.delete(this.findById(id));
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
     }
 
     /**

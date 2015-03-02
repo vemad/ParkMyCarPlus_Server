@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Created by stephaneki on 27/02/15.
+ * @author stephaneki
  */
 public class PlaceTest{
 
