@@ -1,6 +1,7 @@
 package com.pmc.config;
 
 import com.pmc.dao.DAO;
+import com.pmc.dao.LogPlaceDAO;
 import com.pmc.dao.PlaceDAO;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -13,7 +14,8 @@ public class DAOManager {
     private AnnotationConfigApplicationContext ctx;
 
     public enum TypeDAO {
-        PLACE
+        PLACE,
+        LOG_PLACE
     }
 
     private DAOManager() {
@@ -30,6 +32,8 @@ public class DAOManager {
         switch(dao){
             case PLACE:
                return ctx.getBean(PlaceDAO.class);
+            case LOG_PLACE:
+                return ctx.getBean(LogPlaceDAO.class);
             default:
                 return null;
         }

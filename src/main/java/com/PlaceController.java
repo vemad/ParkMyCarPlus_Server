@@ -3,6 +3,10 @@ package com;
 import com.pmc.config.DAOManager;
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
+import com.pmc.service.PlaceService;
+import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
+import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
+import com.pmc.service.PlaceServiceException.PlaceNotFound;
 import com.util.*;
 
 import java.util.List;
@@ -23,7 +27,7 @@ public class PlaceController {
 
     private static final int defaultRadius = 100;
     private static final int maxRadius = 1000;
-    private static final int maxRadiusOfPlace = 3;
+
 
     /**
      * Find a place by its id
@@ -33,70 +37,49 @@ public class PlaceController {
      */
     @RequestMapping("/place")
     public Place place(@RequestParam(value="id") int id) {
-
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-
-        return placeDAO.findById(id);
+        return PlaceService.getInstance().getPlaceById(id);
     }
 
     @RequestMapping("/delete")
     public boolean deletePlace(@RequestParam(value="id") int id) {
-
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-
-        return placeDAO.deleteById(id);
+        return PlaceService.getInstance().deletePlaceById(id);
     }
 
 
 
     @RequestMapping(value ="/place/released", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Place> placeReleased(@RequestBody Position position ){
+        Place placeReleased = null;
+        try {
 
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-        List<Place> listNearestPlace = placeDAO.findNearestPlaces(position.getLatitude(), position.getLongitude(), maxRadiusOfPlace);
+            placeReleased = PlaceService.getInstance().releasePlace(position.getLatitude(), position.getLongitude());
 
-        //If no nearest place found do nothing
-        if(listNearestPlace.isEmpty()){
+            return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.OK);
+
+        } catch (PlaceNotFound placeNotFound) {
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
-        }
-        else{ //else release the first: the nearest place
-            Place place = listNearestPlace.get(0);
-            if(place.isTaken()){
-                place.releasePlace();
-                placeDAO.savePlace(place);
-                return new ResponseEntity(place, new HttpHeaders(), HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity(place, new HttpHeaders(), HttpStatus.CONFLICT);
-            }
+        } catch (PlaceAlreadyReleased placeAlreadyReleased) {
+            return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.CONFLICT);
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(value ="/place/taken", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Place> placeTaken(@RequestBody Position position ){
+        Place placeTaken = null;
+        try {
 
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-        List<Place> listNearestPlace = placeDAO.findNearestPlaces(position.getLatitude(), position.getLongitude(), maxRadiusOfPlace);
+            placeTaken = PlaceService.getInstance().takePlace(position.getLatitude(), position.getLongitude());
 
-        //If no nearest place found,create one
-        if(listNearestPlace.isEmpty()){
-            Place newPlace = new Place();
-            newPlace.setLatitude(position.getLatitude()).setLongitude(position.getLongitude()).takePlace();
-            placeDAO.savePlace(newPlace);
+            return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.OK);
 
-            return new ResponseEntity(newPlace, new HttpHeaders(), HttpStatus.OK);
-        }
-        else{ //else take the first: the nearest place
-            //TODO Change the algo to manager better the taking of a place use
-            Place place = listNearestPlace.get(0);
-            if(place.isTaken()){
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.CONFLICT);
-            }
-            else{
-                place.takePlace();
-                placeDAO.savePlace(place);
-                return new ResponseEntity(place, new HttpHeaders(), HttpStatus.OK);
-            }
+        } catch (PlaceAlreadyTaken placeAlreadyTaken) {
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.CONFLICT);
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -108,9 +91,6 @@ public class PlaceController {
 
         if(radius<1 || radius>maxRadius) radius = defaultRadius;
 
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-        List<Place> listPlace = placeDAO.findPlacesByPosition(latitude, longitude, radius);
-        System.out.println("Nb: " + listPlace.size());
-        return listPlace;
+        return PlaceService.getInstance().listPlacesByPosition(latitude, longitude, radius);
     }
 }

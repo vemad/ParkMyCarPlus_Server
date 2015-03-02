@@ -9,8 +9,12 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.pmc.dao.LogPlaceDAO;
+import com.pmc.dao.LogPlaceDAOImpl;
 import com.pmc.dao.PlaceDAOImpl;
 import com.pmc.dao.PlaceDAO;
+import com.pmc.model.LogPlace;
 import com.pmc.model.Place;
 
 @Configuration
@@ -18,9 +22,10 @@ import com.pmc.model.Place;
 public class AppConfig {
 
     @Bean
-    public PlaceDAO placeDao() {
-        return new PlaceDAOImpl();
-    }
+    public PlaceDAO placeDao() { return new PlaceDAOImpl(); }
+
+    @Bean
+    public LogPlaceDAO LogPlaceDao() { return new LogPlaceDAOImpl(); }
 
     @Bean
     public HibernateTemplate hibernateTemplate() {
@@ -31,6 +36,7 @@ public class AppConfig {
     public SessionFactory sessionFactory() {
         return new LocalSessionFactoryBuilder(getDataSource())
                 .addAnnotatedClasses(Place.class)
+                .addAnnotatedClasses(LogPlace.class)
                 .buildSessionFactory();
     }
 
