@@ -18,8 +18,6 @@ public class PlaceService {
     /*Some Parameters*/
     private static final int maxRadiusOfPlace = 3;
 
-
-
     /*
     * PlaceService is a singleton
     */

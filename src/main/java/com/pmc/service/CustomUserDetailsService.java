@@ -71,4 +71,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     }
 
+    public User SaveUser(User user){
+        return userDao.save(user);
+    }
+
 }

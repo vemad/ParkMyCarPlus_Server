@@ -29,7 +29,7 @@ public class PlaceController {
      * Find a place by its id
      * @param id : id of the place to find
      * @return The place founded or false otherwise
-     * TODO Authentication for
+     *
      */
     @RequestMapping("/place")
     public Place place(@RequestParam(value="id") int id) {
