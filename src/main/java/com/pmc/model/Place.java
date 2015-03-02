@@ -22,13 +22,16 @@ import javax.persistence.Table;
 public class Place implements Serializable{
 
     @Id
+    @Column
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     /*
     Degrees representing the position of the place
      */
+    @Column
     private double latitude;
+    @Column
     private double longitude;
 
     @Column
@@ -43,6 +46,7 @@ public class Place implements Serializable{
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime dateLastTake;
 
+    @Column
     @JsonProperty("isTaken")
     private boolean isTaken;
 

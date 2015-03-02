@@ -73,3 +73,4 @@ build/libs/pmc-rest-service-0.1.0.jar.original
 .idea/vcs.xml
 
 .idea/workspace.xml
+/local.properties
