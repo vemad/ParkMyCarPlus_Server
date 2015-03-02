@@ -38,7 +38,7 @@ public class OAuth2ServerConfiguration {
         public void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers("/place").authenticated();
+                    .antMatchers("/delete").authenticated();
         }
 
     }
