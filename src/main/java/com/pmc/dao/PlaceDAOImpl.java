@@ -55,10 +55,10 @@ public class PlaceDAOImpl implements PlaceDAO{
      * @return   List of all the places contained in the circle specified
      */
     @Override
-    public List<Place> findPlacesByPosition(double longitude, double latitude, int radius){
+    public List<Place> findPlacesByPosition(double latitude, double longitude, int radius){
     //TODO: The request might be optimized
         String request = "FROM Place WHERE " +
-                    radius + " > " + getRequestDistanceCalculatePart(latitude, longitude);
+                    radius + " > (" + getRequestDistanceCalculatePart(latitude, longitude) + ")";
         return (List<Place>)hibernateTemplate.find(request);
     }
 
