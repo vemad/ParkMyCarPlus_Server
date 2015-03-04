@@ -32,6 +32,7 @@ dependencies {
     compile ('org.hibernate:hibernate-core:4.3.6.Final')
     compile ('org.springframework:spring-webmvc:4.1.5.RELEASE')
 
+    //<!-- Use Spring loaded to do hot-swaping -->
     compile ('org.springframework:springloaded:1.2.1.RELEASE')
 
     //Spring Security

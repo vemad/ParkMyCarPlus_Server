@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import com.pmc.dao.PlaceDAO;
 import com.pmc.dao.PlaceDAOImpl;
+import com.pmc.model.Zone;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class AppConfig {
         return new LocalSessionFactoryBuilder(getDataSource())
                 .addAnnotatedClasses(Place.class)
                 .addAnnotatedClasses(LogPlace.class)
+                .addAnnotatedClasses(Zone.class)
                 .buildSessionFactory();
     }
 
