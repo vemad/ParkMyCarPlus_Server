@@ -1,6 +1,7 @@
 package com.pmc.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
+@JsonIgnoreProperties({"authorities", "accountNonLocked"})
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
