@@ -42,4 +42,9 @@ public class Zone {
     public Density getDensity() {
         return density;
     }
+
+    public Zone setDate(DateTime date) {
+        this.date = date;
+        return this;
+    }
 }

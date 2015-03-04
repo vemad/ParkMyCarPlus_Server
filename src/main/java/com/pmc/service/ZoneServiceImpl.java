@@ -14,6 +14,9 @@ import java.util.List;
 @Service(value = "zoneService")
 public class ZoneServiceImpl implements ZoneService {
 
+    /*Some Parameters*/
+    private static final int timelapsMinute = 60;
+
     @Resource
     private ZoneDAO zoneDAO;
 
@@ -24,11 +27,15 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public Zone save(Zone zone) {
+        zone.setDate(new DateTime());
         return zoneDAO.save(zone);
     }
 
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
-        return zoneDAO.getZones(latitude,longitude,new DateTime(), 10);
+
+        //TODO: remove -60 cause by jetlag(timezone)
+        DateTime oldestDate = new DateTime().plusMinutes(-timelapsMinute-60);
+        return zoneDAO.getZones(latitude,longitude,oldestDate, radius);
     }
 }
