@@ -1,6 +1,7 @@
 package com.pmc.controller;
 
 import com.pmc.model.Place;
+import com.pmc.model.User;
 import com.pmc.service.PlaceService;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
@@ -9,9 +10,11 @@ import com.util.*;
 
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,17 +34,38 @@ public class PlaceController {
     /**
      * Find a place by its id
      * @param id : id of the place to find
-     * @return The place founded or false otherwise
-     *
+     * @return The place founded or null otherwise. Check response status for more details
      */
     @RequestMapping("/{id}")
-    public Place place(@PathVariable("id") int id) {
-        return placeService.getPlaceById(id);
+    public @ResponseBody ResponseEntity<Place> place(@PathVariable("id") int id) {
+        try{
+            Place place=placeService.getPlaceById(id);
+            HttpStatus status = HttpStatus.OK;
+            if (place==null){
+               status=HttpStatus.NOT_FOUND;
+            }
+            return new ResponseEntity(place, new HttpHeaders(), status);
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public void deletePlace(@PathVariable("id") int id) {
-        placeService.deletePlaceById(id);
+    public @ResponseBody ResponseEntity<User> deletePlace(@PathVariable("id") int id) {
+        try {
+            placeService.deletePlaceById(id);
+            User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return new ResponseEntity(user, new HttpHeaders(), HttpStatus.OK);
+        }catch (EmptyResultDataAccessException eNotFound){
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            System.err.println(e.getMessage());
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
