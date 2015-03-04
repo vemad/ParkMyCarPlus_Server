@@ -84,7 +84,7 @@ INSERT INTO `place` (`id`, `longitude`, `latitude`, `is_taken`, `date_creation`,
 -- Contenu de la table `user`
 --
 
-INSERT INTO `user` (`id`, `login`, `password`) VALUES
+INSERT INTO `user` (`id`, `username`, `password`) VALUES
 (1, 'roy', 'spring'),
 (2, 'joe', 'doe'),
 (3, 'Barack', 'Obama');

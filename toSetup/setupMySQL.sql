@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS `place` (
 
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `login` varchar(11) NOT NULL,
+  `username` varchar(11) NOT NULL,
   `password` varchar(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `login` (`login`)
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
