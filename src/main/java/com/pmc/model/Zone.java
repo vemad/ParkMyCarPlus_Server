@@ -11,6 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @JsonIgnoreProperties({"date"})
+@Table(name="zone")
 public class Zone {
 
     public static enum Density {LOW, MEDIUM, HIGH };
