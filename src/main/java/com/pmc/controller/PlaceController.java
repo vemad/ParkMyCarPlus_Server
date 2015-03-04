@@ -36,7 +36,7 @@ public class PlaceController {
      * @param id : id of the place to find
      * @return The place founded or null otherwise. Check response status for more details
      */
-    @RequestMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<Place> place(@PathVariable("id") int id) {
         try{
             Place place=placeService.getPlaceById(id);
@@ -45,6 +45,8 @@ public class PlaceController {
                status=HttpStatus.NOT_FOUND;
             }
             return new ResponseEntity(place, new HttpHeaders(), status);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
