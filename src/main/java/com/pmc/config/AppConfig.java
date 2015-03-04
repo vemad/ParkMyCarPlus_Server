@@ -1,29 +1,33 @@
 package com.pmc.config;
 
 import javax.sql.DataSource;
+
+import com.pmc.dao.PlaceDAO;
+import com.pmc.dao.PlaceDAOImpl;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.pmc.dao.LogPlaceDAO;
-import com.pmc.dao.LogPlaceDAOImpl;
-import com.pmc.dao.PlaceDAOImpl;
-import com.pmc.dao.PlaceDAO;
 import com.pmc.model.LogPlace;
 import com.pmc.model.Place;
 
 @Configuration
-//@EnableTransactionManagement
+@EnableJpaRepositories
 public class AppConfig {
-    @Bean
-    public PlaceDAO placeDao() { return new PlaceDAOImpl(); }
 
-    @Bean
-    public LogPlaceDAO LogPlaceDao() { return new LogPlaceDAOImpl(); }
+    private static final String DATASOURCE_DRIVER_CLASS_NAME = "spring.datasource.driver-class-name";
+    private static final String DATASOURCE_URL = "spring.datasource.url";
+    private static final String DATASOURCE_USERNAME = "spring.datasource.username";
+    private static final String DATASOURCE_PASSWORD = "spring.datasource.password";
+
+    @Autowired
+    private Environment env;
 
     @Bean
     public HibernateTemplate hibernateTemplate() {
@@ -41,10 +45,10 @@ public class AppConfig {
     @Bean
     public DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/pmc");
-        dataSource.setUsername("pmcServer");
-        dataSource.setPassword("pmcServerPwd");
+        dataSource.setDriverClassName(env.getProperty(DATASOURCE_DRIVER_CLASS_NAME));
+        dataSource.setUrl(env.getProperty(DATASOURCE_URL));
+        dataSource.setUsername(env.getProperty(DATASOURCE_USERNAME));
+        dataSource.setPassword(env.getProperty(DATASOURCE_PASSWORD));
 
         return dataSource;
     }

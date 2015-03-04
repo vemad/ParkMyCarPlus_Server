@@ -13,12 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 /**
  * Created by Gaetan on 02/03/2015.
  */
-@Entity
+@Entity(name="logplace")
 public class LogPlace {
     public static enum Action {create, release, take};
 
@@ -28,7 +27,7 @@ public class LogPlace {
     private int id;
 
     @ManyToOne( cascade = {CascadeType.DETACH} )
-    @JoinColumn(name="placeId")
+    @JoinColumn(name="place_id")
     private Place place;
 
     @Column

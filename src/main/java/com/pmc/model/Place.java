@@ -34,19 +34,19 @@ public class Place implements Serializable{
     @Column
     private double longitude;
 
-    @Column
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Column(name = "date_creation")
     private DateTime dateCreation;
 
-    @Column
+    @Column(name = "date_last_release")
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime dateLastRelease;
 
-    @Column
+    @Column(name = "date_last_take")
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime dateLastTake;
 
-    @Column
+    @Column(name = "is_taken")
     @JsonProperty("isTaken")
     private boolean isTaken;
 

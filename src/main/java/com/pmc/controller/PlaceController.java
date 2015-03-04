@@ -14,15 +14,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 
-/**
- * @author Stephane KI & Gaëtan DESHAYES
- */
+
 @RestController
+@RequestMapping("rest/places")
 public class PlaceController {
 
     private static final int defaultRadius = 100;
     private static final int maxRadius = 1000;
+
+    @Resource
+    private PlaceService placeService;
 
 
     /**
@@ -31,24 +34,24 @@ public class PlaceController {
      * @return The place founded or false otherwise
      *
      */
-    @RequestMapping("/place")
-    public Place place(@RequestParam(value="id") int id) {
-        return PlaceService.getInstance().getPlaceById(id);
+    @RequestMapping("/{id}")
+    public Place place(@PathVariable("id") int id) {
+        return placeService.getPlaceById(id);
     }
 
-    @RequestMapping("/delete")
-    public boolean deletePlace(@RequestParam(value="id") int id) {
-        return PlaceService.getInstance().deletePlaceById(id);
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public void deletePlace(@PathVariable("id") int id) {
+        placeService.deletePlaceById(id);
     }
 
 
 
-    @RequestMapping(value ="/place/released", method = RequestMethod.POST)
+    @RequestMapping(value ="/released", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Place> placeReleased(@RequestBody Position position ){
         Place placeReleased = null;
         try {
 
-            placeReleased = PlaceService.getInstance().releasePlace(position.getLatitude(), position.getLongitude());
+            placeReleased = placeService.releasePlace(position.getLatitude(), position.getLongitude());
 
             return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.OK);
 
@@ -62,12 +65,12 @@ public class PlaceController {
         }
     }
 
-    @RequestMapping(value ="/place/taken", method = RequestMethod.POST)
+    @RequestMapping(value ="/taken", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Place> placeTaken(@RequestBody Position position ){
         Place placeTaken = null;
         try {
 
-            placeTaken = PlaceService.getInstance().takePlace(position.getLatitude(), position.getLongitude());
+            placeTaken = placeService.takePlace(position.getLatitude(), position.getLongitude());
 
             return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.OK);
 
@@ -80,13 +83,13 @@ public class PlaceController {
     }
 
 
-    @RequestMapping("/places")
+    @RequestMapping("")
     public List<Place> listPlacesByPosition(@RequestParam(value="latitude") double latitude,
                                             @RequestParam(value="longitude") double longitude,
                                             @RequestParam(value="radius", defaultValue="0") int radius){
 
         if(radius<1 || radius>maxRadius) radius = defaultRadius;
 
-        return PlaceService.getInstance().listPlacesByPosition(latitude, longitude, radius);
+        return placeService.listPlacesByPosition(latitude, longitude, radius);
     }
 }

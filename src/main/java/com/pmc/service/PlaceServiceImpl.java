@@ -1,55 +1,49 @@
 package com.pmc.service;
 
-import com.pmc.dao.DAOManager;
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import com.pmc.service.PlaceServiceException.*;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * Created by Gaetan on 02/03/2015.
  */
-public class PlaceService {
+@Service(value = "placeService")
+public class PlaceServiceImpl implements PlaceService {
 
     /*Some Parameters*/
     private static final int maxRadiusOfPlace = 3;
 
-    /*
-    * PlaceService is a singleton
-    */
-    private static PlaceService placeService = new PlaceService();
+    @Resource
+    private LogPlaceService logPlaceService;
 
-    public static PlaceService getInstance(){
-        return placeService;
+    @Resource
+    private PlaceDAO placeDAO;
+
+    public PlaceServiceImpl() {
     }
-
-    private PlaceService(){}
 
     public Place getPlaceById(int id){
-        PlaceDAO placeDAO = (PlaceDAO) DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-        return placeDAO.findById(id);
+        return placeDAO.findOne(id);
     }
 
-    public boolean deletePlaceById(int id){
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-        return placeDAO.deleteById(id);
+    public void deletePlaceById(int id){
+        placeDAO.delete(id);
     }
 
     public Place releasePlace(double latitude, double longitude) throws PlaceNotFound, PlaceAlreadyReleased {
-
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-
         Place placeReleased = findPlaceByPosition(latitude, longitude);;
         if(placeReleased.isTaken()){
             placeReleased.releasePlace();
-            placeDAO.savePlace(placeReleased);
+            placeDAO.save(placeReleased);
 
             //Log the event
-            LogPlaceService.getInstance().logPlaceReleased(placeReleased, latitude, longitude);
+            logPlaceService.logPlaceReleased(placeReleased, latitude, longitude);
 
             return placeReleased;
         }
@@ -61,7 +55,6 @@ public class PlaceService {
     public Place takePlace(double latitude, double longitude) throws PlaceAlreadyTaken {
 
         Place placeTaken = null;
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
 
         try {
             placeTaken = findPlaceByPosition(latitude, longitude);
@@ -70,11 +63,11 @@ public class PlaceService {
             //If no place found,create one
             placeTaken = new Place();
             placeTaken.setLatitude(latitude).setLongitude(longitude).takePlace();
-            placeDAO.savePlace(placeTaken);
+            placeDAO.save(placeTaken);
 
             //Log the event
-            LogPlaceService.getInstance().logPlaceCreated(placeTaken, latitude, longitude);
-            LogPlaceService.getInstance().logPlaceTaken(placeTaken, latitude, longitude);
+            logPlaceService.logPlaceCreated(placeTaken, latitude, longitude);
+            logPlaceService.logPlaceTaken(placeTaken, latitude, longitude);
 
             return placeTaken;
         }
@@ -84,20 +77,17 @@ public class PlaceService {
         }
         else{
             placeTaken.takePlace();
-            placeDAO.savePlace(placeTaken);
+            placeDAO.save(placeTaken);
 
             //Log the event
-            LogPlaceService.getInstance().logPlaceTaken(placeTaken, latitude, longitude);
+            logPlaceService.logPlaceTaken(placeTaken, latitude, longitude);
 
             return placeTaken;
         }
     }
 
     public List<Place> listPlacesByPosition(double latitude, double longitude, int radius){
-
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
-        List<Place> listPlace = placeDAO.findPlacesByPosition(latitude, longitude, radius);
-        return listPlace;
+        return placeDAO.findPlacesByPosition(latitude, longitude, radius);
     }
 
     public Place findPlaceByPosition(double latitude, double longitude) throws PlaceNotFound {
@@ -111,7 +101,6 @@ public class PlaceService {
     }
 
     public List<Place> findNearestPlacesByPosition(double latitude, double longitude){
-        PlaceDAO placeDAO = (PlaceDAO)DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.PLACE);
         return placeDAO.findNearestPlaces(latitude, longitude, maxRadiusOfPlace);
     }
 

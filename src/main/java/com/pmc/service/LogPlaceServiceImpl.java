@@ -1,24 +1,21 @@
 package com.pmc.service;
 
-import com.pmc.dao.DAOManager;
 import com.pmc.dao.LogPlaceDAO;
 import com.pmc.model.LogPlace;
 import com.pmc.model.Place;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by Gaetan on 02/03/2015.
  */
-public class LogPlaceService {
-    /*
-    * LogPlaceService is a singleton
-    */
-    private static LogPlaceService logPlaceService = new LogPlaceService();
+@Transactional
+@Service(value = "logPlaceService")
+public class LogPlaceServiceImpl implements LogPlaceService {
 
-    public static LogPlaceService getInstance(){
-        return logPlaceService;
-    }
-
-    private LogPlaceService(){}
+    @Autowired
+    private LogPlaceDAO logPlaceDAO;
 
     public void logPlaceTaken(Place place, double latitude, double longitude){
         this.saveLogPlace(new LogPlace(place, LogPlace.Action.take, latitude, longitude));
@@ -33,7 +30,6 @@ public class LogPlaceService {
     }
 
     public void saveLogPlace(LogPlace logPlace){
-        LogPlaceDAO logPlaceDAO = (LogPlaceDAO) DAOManager.getDAOManager().getDao(DAOManager.TypeDAO.LOG_PLACE);
-        logPlaceDAO.saveLogPlace(logPlace);
+        logPlaceDAO.save(logPlace);
     }
 }

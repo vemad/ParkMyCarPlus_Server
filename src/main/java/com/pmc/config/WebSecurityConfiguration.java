@@ -1,11 +1,6 @@
 package com.pmc.config;
-
-import com.pmc.dao.PlaceDAO;
-import com.pmc.dao.PlaceDAOImpl;
-import com.pmc.model.Place;
 import com.pmc.service.CustomUserDetailsService;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.hibernate.SessionFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

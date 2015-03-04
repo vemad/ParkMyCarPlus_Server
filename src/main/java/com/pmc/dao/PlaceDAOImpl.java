@@ -1,6 +1,5 @@
 package com.pmc.dao;
 
-import org.hibernate.annotations.SourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 
@@ -8,53 +7,14 @@ import com.pmc.model.Place;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 /**
  * Created by Gaetan on 23/02/2015.
  */
+public class PlaceDAOImpl implements PlaceDAOCustom{
 
-
-@Transactional
-public class PlaceDAOImpl implements PlaceDAO{
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
-    /**
-     *
-     * @param id Id of the place to be found
-     * @return the place founded or null otherwise
-     */
-    @Override
-    public Place findById(int id) {
-        Place place = hibernateTemplate.get(Place.class, id);
-        return place;
-    }
-
-    @Override
-    public Place savePlace(Place place){
-        hibernateTemplate.saveOrUpdate(place);
-        return place;
-    }
-
-    @Override
-    public boolean deleteById(int id){
-        try{
-            hibernateTemplate.delete(this.findById(id));
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-
-    }
-
-    /**
-     * Desc TODO Fill the description
-     * @param   latitude
-     * @param   longitude
-     * @return   List of all the places contained in the circle specified
-     */
-    @Override
     public List<Place> findPlacesByPosition(double latitude, double longitude, int radius){
     //TODO: The request might be optimized
         String request = "FROM Place WHERE " +
@@ -62,7 +22,6 @@ public class PlaceDAOImpl implements PlaceDAO{
         return (List<Place>)hibernateTemplate.find(request);
     }
 
-    @Override
     public List<Place> findNearestPlaces(double latitude, double longitude, int maxRadius) { //TODO: optimize request
         String request = "FROM Place WHERE " + getRequestDistanceCalculatePart(latitude, longitude) + "< " + maxRadius +
                         " ORDER BY " +getRequestDistanceCalculatePart(latitude, longitude);// +" LIMIT " + nbPlaces;
