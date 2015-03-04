@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -23,6 +24,8 @@ public class OAuth2ServerConfiguration {
 
     private static final String RESOURCE_ID = "restservice";
 
+
+
     @Configuration
     @EnableResourceServer
     protected static class ResourceServerConfiguration extends
@@ -38,7 +41,7 @@ public class OAuth2ServerConfiguration {
         public void configure(HttpSecurity http) throws Exception {
             http
                     .authorizeRequests()
-                    .antMatchers("/delete").authenticated();
+                    .antMatchers("/rest/places/delete/*").authenticated();
         }
 
     }
@@ -47,6 +50,9 @@ public class OAuth2ServerConfiguration {
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfiguration extends
             AuthorizationServerConfigurerAdapter {
+
+        @Autowired
+        private Environment env;
 
         private TokenStore tokenStore = new InMemoryTokenStore();
 
@@ -57,25 +63,21 @@ public class OAuth2ServerConfiguration {
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints)
                 throws Exception {
-            // @formatter:off
             endpoints
                     .tokenStore(this.tokenStore)
                     .authenticationManager(this.authenticationManager);
-            // @formatter:on
         }
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            // @formatter:off
             clients
                     .inMemory()
-                    .withClient("clientapp")
+                    .withClient(env.getProperty("auth-client-id"))
                     .authorizedGrantTypes("password","refresh_token")
                     .authorities("USER")
                     .scopes("read", "write")
                     .resourceIds(RESOURCE_ID)
-                    .secret("123456");
-            // @formatter:on
+                    .secret(env.getProperty("auth-client-secret"));
         }
 
         @Bean

@@ -2,8 +2,6 @@ package com.pmc.config;
 
 import javax.sql.DataSource;
 
-import com.pmc.dao.PlaceDAO;
-import com.pmc.dao.PlaceDAOImpl;
 import com.pmc.model.Zone;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
