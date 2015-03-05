@@ -42,7 +42,7 @@ public class ZoneController {
     @RequestMapping(value = "/indicate", method = RequestMethod.POST)
     public ResponseEntity<Zone> indicateZone(@RequestBody Zone zone) {
         try{
-            return new ResponseEntity(zoneService.save(zone), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(zoneService.save(zone), new HttpHeaders(), HttpStatus.OK);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);

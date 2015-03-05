@@ -22,7 +22,6 @@ public class ZoneDAOImpl implements ZoneDAOCustom {
         String request = "FROM Zone WHERE " +
                 radius + " > (" + getRequestDistanceCalculatePart(latitude, longitude) + ")" +
                 " AND '" + new Timestamp(date.getMillis()) + "' < date" ;
-        System.out.println(request);
         return (List<Zone>)hibernateTemplate.find(request);
     }
 
