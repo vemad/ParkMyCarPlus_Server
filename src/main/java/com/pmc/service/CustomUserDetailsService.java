@@ -2,6 +2,7 @@ package com.pmc.service;
 
 import com.pmc.dao.UserDao;
 import com.pmc.model.User;
+import com.pmc.service.UserServiceException.UserNameAlreadyUsed;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,8 +30,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new User(user);
     }
 
-    public User SaveUser(User user){
+    public User SaveUser(User user) throws UserNameAlreadyUsed{
+        User user1=userDao.findByUsername(user.getUsername());
+        if(user1!=null){
+            throw new UserNameAlreadyUsed();
+        }
         return userDao.save(user);
+
     }
 
 }

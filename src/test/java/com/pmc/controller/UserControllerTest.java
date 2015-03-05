@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created by stephaneki on 05/03/15.
@@ -60,7 +61,23 @@ public class UserControllerTest {
         when().
                 post("/rest/users/signup").
         then().
-                statusCode(HttpStatus.SC_OK);
+                statusCode(HttpStatus.SC_OK).
+                body("message", is("New user created"));
+    }
+
+    @Test
+    public void testUsernameShouldBeUnique() throws Exception {
+        String user="{ \"username\" : \"username\", \"password\" : \"password\"}";
+
+        given().
+                body(user).
+        with().
+                contentType(ContentType.JSON).
+        when().
+                post("/rest/users/signup").
+        then().
+                statusCode(HttpStatus.SC_CONFLICT).
+                body("message", is("This username is already used"));
 
     }
 }

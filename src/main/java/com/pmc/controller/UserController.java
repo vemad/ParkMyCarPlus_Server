@@ -2,7 +2,9 @@ package com.pmc.controller;
 
 import com.pmc.model.User;
 import com.pmc.service.CustomUserDetailsService;
+import com.pmc.service.UserServiceException.UserNameAlreadyUsed;
 import com.util.Message4Client;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,8 +25,10 @@ public class UserController {
     public @ResponseBody ResponseEntity<Message4Client> signup(@RequestBody User user) {
 
         try{
-            User newuser = userService.SaveUser(user);
+            userService.SaveUser(user);
             return new ResponseEntity(new Message4Client("New user created"), new HttpHeaders(), HttpStatus.OK);
+        }catch (UserNameAlreadyUsed e) {
+            return new ResponseEntity(new Message4Client("This username is already used"), new HttpHeaders(), HttpStatus.CONFLICT);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
