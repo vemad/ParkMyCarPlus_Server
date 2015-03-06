@@ -32,7 +32,7 @@ public class PlaceDAOImpl implements PlaceDAOCustom{
     private String getRequestDistanceCalculatePart(double latitude, double longitude){
         return "(12756274 * ATAN(SQRT(SIN((latitude - " + latitude + " ) * PI() / 180/2) * SIN((latitude - " + latitude + " ) * PI() / 180/2) + " +
                 "COS( " + latitude + " * PI() / 180) * COS(latitude * PI() / 180) * " +
-                "POW(SIN((longitude - " + longitude + " ) * PI() / 180/2),2)) , " +
+                "POWER(SIN((longitude - " + longitude + " ) * PI() / 180/2),2)) , " +
                 "SQRT(1-(SIN((latitude - " + latitude + " ) * PI() / 180/2) * SIN((latitude - " + latitude + " ) * PI() / 180/2) + " +
                 "COS(" + latitude + " * PI() / 180) * COS(latitude * PI() / 180) * " +
                 "POW(SIN((longitude - " + longitude + " ) * PI() / 180/2),2)))))";

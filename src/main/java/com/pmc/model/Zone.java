@@ -44,6 +44,21 @@ public class Zone {
         return density;
     }
 
+    public Zone setLatitude(double latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public Zone setDensity(Density density) {
+        this.density = density;
+        return this;
+    }
+
+    public Zone setLongitude(double longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+
     public Zone setDate(DateTime date) {
         this.date = date;
         return this;

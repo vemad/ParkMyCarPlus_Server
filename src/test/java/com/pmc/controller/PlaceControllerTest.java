@@ -5,7 +5,6 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
-import com.util.Position;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -85,7 +84,7 @@ public class PlaceControllerTest {
     }
 
     @Test
-    public void whenFetchingAPlaceRequestMethodShouldBeGet() throws Exception {
+    public void whenFetchingAPlace_RequestMethodShouldBeGet() throws Exception {
         when().
                 post("/rest/places/{id}", freePlace.getId()).
         then().
@@ -94,11 +93,10 @@ public class PlaceControllerTest {
     }
 
     @Test
-    @Ignore
+    @Ignore //Sub queries issues in hsqlbd (need some readings to fix it)
     public void conflictStatusSentIfPlaceAlreadyReleased() throws Exception {
-        Position p = new Position().setLatitude(freePlace.getLatitude()).
-                                   setLongitude(freePlace.getLongitude());
-        String pos="{ \"latitude\" : 1.0, \"longitude\" : 1.0}";
+        String pos="{ \"latitude\" : "+freePlace.getLatitude()+"," +
+                " \"longitude\" :" +freePlace.getLongitude()+"}";
 
         given().
                 body(pos).
@@ -106,6 +104,22 @@ public class PlaceControllerTest {
                 contentType(ContentType.JSON).
         when().
                 post("/rest/places/released").
+        then().
+                statusCode(HttpStatus.SC_CONFLICT);
+    }
+
+    @Test
+    @Ignore //Sub queries issues in hsqlbd (need some readings to fix it)
+    public void conflictStatusIfPlaceAlreadyTaken() throws Exception {
+        String pos="{ \"latitude\" : "+takenPlace.getLatitude()
+                +", \"longitude\" : "+takenPlace.getLongitude()+"}";
+
+        given().
+                body(pos).
+        with().
+                contentType(ContentType.JSON).
+        when().
+                post("/rest/places/taken").
         then().
                 statusCode(HttpStatus.SC_CONFLICT);
     }
