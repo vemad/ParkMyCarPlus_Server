@@ -1,9 +1,8 @@
 package com.pmc.dao;
 
+import com.pmc.model.Place;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTemplate;
-
-import com.pmc.model.Place;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.pmc.config;
 
-import javax.sql.DataSource;
-
+import com.pmc.model.LogPlace;
+import com.pmc.model.Place;
 import com.pmc.model.Zone;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
@@ -13,8 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 
-import com.pmc.model.LogPlace;
-import com.pmc.model.Place;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories

@@ -2,13 +2,13 @@ package com.pmc.service;
 
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
-
-
-import java.util.List;
-import com.pmc.service.PlaceServiceException.*;
+import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
+import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
+import com.pmc.service.PlaceServiceException.PlaceNotFound;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by Gaetan on 02/03/2015.
