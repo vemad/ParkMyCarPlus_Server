@@ -6,10 +6,8 @@ import com.pmc.service.PlaceService;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
 import com.pmc.service.PlaceServiceException.PlaceNotFound;
-import com.util.*;
-
-import java.util.List;
-
+import com.util.Message4Client;
+import com.util.Position;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  *
@@ -36,7 +35,7 @@ public class PlaceController {
 
     /**
      * To prevent client to ask for a too large perimeter this radius is the maximum.
-     * We are using it when the specified radius is greater than this value. 
+     * We are using it when the specified radius is greater than this value.
      */
     private static final int maxRadius = 1000;
 

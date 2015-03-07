@@ -12,18 +12,34 @@ import java.util.List;
 
 /**
  * Created by stephaneki on 04/03/15.
+ *
+ *
+ * @author Stephane KI
  */
 @RestController
 @RequestMapping("rest/zones")
 public class ZoneController {
 
+    /**
+     *
+     */
     private static final int defaultRadius = 500;
+
+    /**
+     *
+     */
     private static final int maxRadius = 5000;
+
     @Resource
     private ZoneService zoneService;
 
+    /**
+     * Find a zone by its id
+     * @param id : id of the zone to find
+     * @return The zone founded or null otherwise. Check response status for more details.
+     */
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-     public ResponseEntity<Zone> getZoneById(@PathVariable("id") int id) {
+     public ResponseEntity<Zone> findZoneById(@PathVariable("id") int id) {
         try{
             Zone zone=zoneService.getById(id);
             HttpStatus status = HttpStatus.OK;
@@ -39,6 +55,11 @@ public class ZoneController {
         }
     }
 
+    /**
+     *
+     * @param zone
+     * @return
+     */
     @RequestMapping(value = "/indicate", method = RequestMethod.POST)
     public ResponseEntity<Zone> indicateZone(@RequestBody Zone zone) {
         try{
@@ -50,10 +71,17 @@ public class ZoneController {
 
     }
 
+    /**
+     *
+     * @param latitude latitude of position specified.
+     * @param longitude longitude of the position specified.
+     * @param radius 
+     * @return
+     */
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<List<Zone>> listZonesByPosition(@RequestParam(value="latitude") double latitude,
-                                            @RequestParam(value="longitude") double longitude,
-                                            @RequestParam(value="radius", defaultValue="0") int radius){
+                                                          @RequestParam(value="longitude") double longitude,
+                                                          @RequestParam(value="radius", defaultValue="0") int radius){
 
         if(radius<1 || radius>maxRadius) radius = defaultRadius;
 
@@ -63,9 +91,6 @@ public class ZoneController {
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
-
-
 
 }

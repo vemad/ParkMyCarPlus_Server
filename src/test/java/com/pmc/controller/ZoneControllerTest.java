@@ -78,4 +78,12 @@ public class ZoneControllerTest {
                 then().
                 statusCode(HttpStatus.SC_BAD_REQUEST);
     }
+
+    @Test
+    public void whenFetchingAPlace_RequestMethodShouldBeGet() throws Exception {
+        when().
+                post("/rest/zones/{id}", highDensityZone.getId()).
+                then().
+                statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
+    }
 }

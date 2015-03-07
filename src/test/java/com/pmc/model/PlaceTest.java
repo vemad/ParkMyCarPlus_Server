@@ -1,9 +1,10 @@
 package com.pmc.model;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author stephaneki
@@ -14,9 +15,7 @@ public class PlaceTest{
 
     @Before
     public void setUp(){
-        place= new Place();
-        place.setLatitude(12.12);
-        place.setLongitude(10.10);
+        place= new Place().setLatitude(12.12).setLongitude(10.10);
     }
 
     @After
@@ -26,7 +25,7 @@ public class PlaceTest{
 
     @Test
     public void hasRequiredProperties(){
-        Assert.assertEquals(place.getLatitude(), 12.12,0);
-        Assert.assertEquals(place.getLongitude(),10.10,0);
+        assertEquals(place.getLatitude(), 12.12, 0);
+        assertEquals(place.getLongitude(), 10.10, 0);
     }
 }

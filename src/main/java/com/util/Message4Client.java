@@ -16,9 +16,4 @@ public class Message4Client {
         return message;
     }
 
-    public Message4Client setMessage(String message) {
-        this.message = message;
-        return this;
-    }
-
 }
