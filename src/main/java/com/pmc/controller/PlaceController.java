@@ -19,12 +19,25 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-
+/**
+ *
+ * Default controller for url concerning Places
+ * @author stephane Ki
+ */
 @RestController
 @RequestMapping("rest/places")
 public class PlaceController {
 
+    /**
+     * The default radius of the circle in which places has to be founded.
+     * Its used when the user does not specify his own radius.
+     */
     private static final int defaultRadius = 100;
+
+    /**
+     * To prevent client to ask for a too large perimeter this radius is the maximum.
+     * We are using it when the specified radius is greater than this value. 
+     */
     private static final int maxRadius = 1000;
 
     @Resource
@@ -34,10 +47,10 @@ public class PlaceController {
     /**
      * Find a place by its id
      * @param id : id of the place to find
-     * @return The place founded or null otherwise. Check response status for more details
+     * @return The place founded or null otherwise. Check response status for more details.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<Place> place(@PathVariable("id") int id) {
+    public @ResponseBody ResponseEntity<Place> findPlaceById(@PathVariable("id") int id) {
         try{
             Place place=placeService.getPlaceById(id);
             HttpStatus status = HttpStatus.OK;
@@ -54,12 +67,21 @@ public class PlaceController {
 
     }
 
+
+    /**
+     * Delete a place knowing its id
+     * @param id : id of the place to delete
+     * @return A message if the place have been deleted or null otherwise. Client should check response status
+     * for more details on what happened
+     */
+    // TODO Remove the 'delete' word in the url
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public @ResponseBody ResponseEntity<User> deletePlace(@PathVariable("id") int id) {
+    public @ResponseBody ResponseEntity<Message4Client> deletePlaceById(@PathVariable("id") int id) {
         try {
             placeService.deletePlaceById(id);
             User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            return new ResponseEntity(user, new HttpHeaders(), HttpStatus.OK);
+            String message= "Place <"+id+"> deleted by <"+user.getUsername()+">";
+            return new ResponseEntity(new Message4Client(message), new HttpHeaders(), HttpStatus.OK);
         }catch (EmptyResultDataAccessException eNotFound){
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
         }catch (IllegalArgumentException e){
@@ -71,14 +93,21 @@ public class PlaceController {
     }
 
 
-
+    /**
+     * Declare to the community that we are releasing a place by specifying our position.
+     *
+     * @param position Objected created using data send by the client.
+     *                 These data contains latitude and longitude information.
+     *
+     * @return The place that has been released or null if the place has been founded.
+     * If the place has already been released then a conflict status is sent.
+     */
     @RequestMapping(value ="/released", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Place> placeReleased(@RequestBody Position position ){
         Place placeReleased = null;
         try {
 
             placeReleased = placeService.releasePlace(position.getLatitude(), position.getLongitude());
-
             return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.OK);
 
         } catch (PlaceNotFound placeNotFound) {
@@ -91,17 +120,23 @@ public class PlaceController {
         }
     }
 
+    /**
+     * Declare that the client is taking a place by specifying its position.
+     *
+     * @param position Objected created using data send by the client.
+     *                 These data contains latitude and longitude information.
+     * @return The place that has been taken or null otherwise.
+     */
     @RequestMapping(value ="/taken", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Place> placeTaken(@RequestBody Position position ){
         Place placeTaken = null;
         try {
 
             placeTaken = placeService.takePlace(position.getLatitude(), position.getLongitude());
-
             return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.OK);
 
         } catch (PlaceAlreadyTaken placeAlreadyTaken) {
-            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.CONFLICT);
+            return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -109,6 +144,13 @@ public class PlaceController {
     }
 
 
+    /**
+     * List all the places founded free in a specified circle.
+     * @param latitude latitude of position specified.
+     * @param longitude longitude of the position specified.
+     * @param radius radius of the circle in which we are looking for places.
+     * @return A list of all the places founded.
+     */
     @RequestMapping("")
     public List<Place> listPlacesByPosition(@RequestParam(value="latitude") double latitude,
                                             @RequestParam(value="longitude") double longitude,

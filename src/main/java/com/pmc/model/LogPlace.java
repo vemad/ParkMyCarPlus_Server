@@ -50,4 +50,7 @@ public class LogPlace {
         this.longitude = longitude;
         this.date = new DateTime();
     }
+
+    public LogPlace() {
+    }
 }

@@ -56,13 +56,13 @@ public class PlaceControllerTest {
     @Test
     public void canFetchAPlaceByItsId() throws Exception {
         when().
-            get("/rest/places/{id}", freePlace.getId()).
+                get("/rest/places/{id}", freePlace.getId()).
         then().
-            statusCode(HttpStatus.SC_OK).
-            body("id", is(freePlace.getId())).
-            body("latitude", is((float) freePlace.getLatitude())).
-            body("longitude", is((float) freePlace.getLongitude())).
-            body("isTaken", is(false));
+                statusCode(HttpStatus.SC_OK).
+                body("id", is(freePlace.getId())).
+                body("latitude", is((float) freePlace.getLatitude())).
+                body("longitude", is((float) freePlace.getLongitude())).
+                body("isTaken", is(false));
     }
 
     @Test
@@ -129,7 +129,7 @@ public class PlaceControllerTest {
     public void canDeleteAPlaceByItsId() throws Exception {
         int id= freePlace.getId();
         when().
-                delete("/rest/places/delete/{id}", id).
+                delete("/rest/places/{id}", id).
         then().
                 statusCode(HttpStatus.SC_OK);
         when().

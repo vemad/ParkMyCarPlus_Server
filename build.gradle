@@ -10,7 +10,7 @@ buildscript {
         classpath('org.springframework.boot:spring-boot-gradle-plugin:1.1.10.RELEASE')
 
         //<!-- Use Spring loaded to do hot-swaping -->
-        classpath ('org.springframework:springloaded:1.2.0.RELEASE')
+        //classpath ('org.springframework:springloaded:1.2.0.RELEASE')
     }
 }
 
@@ -19,7 +19,7 @@ apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: "jacoco"
 jacoco {
-    toolVersion = "0.7.2.201409121644"
+    toolVersion = "0.7.4.201502262128"
 }
 
 test {

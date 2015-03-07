@@ -60,4 +60,22 @@ public class ZoneControllerTest {
                 body("longitude", is((float)highDensityZone.getLongitude())).
                 body("density", is(Zone.Density.HIGH.toString()));
     }
+
+    @Test
+    public void notFoundStatusSentIfZoneDoesNotExist() throws Exception {
+        int dummyId= highDensityZone.getId() + 1;
+        when().
+                get("/rest/zones/{id}", dummyId).
+                then().
+                statusCode(HttpStatus.SC_NOT_FOUND);
+
+    }
+
+    @Test
+    public void badRequestStatusSentIfIdIsNotANumber() throws Exception {
+        when().
+                get("/rest/zones/{id}", "dummyId").
+                then().
+                statusCode(HttpStatus.SC_BAD_REQUEST);
+    }
 }
