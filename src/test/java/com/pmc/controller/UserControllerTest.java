@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Created by stephaneki on 05/03/15.
@@ -67,10 +67,10 @@ public class UserControllerTest {
 
     @Test
     public void testUsernameShouldBeUnique() throws Exception {
-        String user="{ \"username\" : \"username\", \"password\" : \"password\"}";
+        String userData="{ \"username\" : \"username\", \"password\" : \"password\"}";
 
         given().
-                body(user).
+                body(userData).
         with().
                 contentType(ContentType.JSON).
         when().
@@ -78,6 +78,24 @@ public class UserControllerTest {
         then().
                 statusCode(HttpStatus.SC_CONFLICT).
                 body("message", is("This username is already used"));
+
+    }
+
+    @Test
+    public void testHowToAuthenticateAClient() throws Exception {
+        String data= "password="+user.getPassword()+"&username="+user.getUsername()+
+                     "&grant_type=password&scope=read%20write";
+
+        String json= given().
+                contentType("application/x-www-form-urlencoded").
+                body(data).
+                auth().basic("pmcAndroid", "123456").
+        when().
+                post("/oauth/token").asString();
+
+        System.err.println(json);
+        //JsonPath jsonPath = new JsonPath(json);
+        //given().auth().oauth2(jsonPath.getString("access_token"));
 
     }
 }

@@ -36,6 +36,6 @@ public class ZoneServiceImpl implements ZoneService {
 
         //TODO: remove -60 cause by jetlag(timezone)
         DateTime oldestDate = new DateTime().plusMinutes(-timelapsMinute-60);
-        return zoneDAO.getZones(latitude,longitude,oldestDate, radius);
+        return zoneDAO.findZonesByPosition(latitude, longitude, oldestDate, radius);
     }
 }

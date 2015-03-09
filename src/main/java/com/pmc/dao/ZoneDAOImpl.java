@@ -17,7 +17,7 @@ public class ZoneDAOImpl implements ZoneDAOCustom {
     private HibernateTemplate hibernateTemplate;
 
     @Override
-    public List<Zone> getZones(double latitude, double longitude, DateTime date, int radius) {
+    public List<Zone> findZonesByPosition(double latitude, double longitude, DateTime date, int radius) {
         //TODO: The request might be optimized
         String request = "FROM Zone WHERE " +
                 radius + " > (" + getRequestDistanceCalculatePart(latitude, longitude) + ")" +
