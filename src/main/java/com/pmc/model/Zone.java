@@ -1,6 +1,8 @@
 package com.pmc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -27,6 +29,10 @@ public class Zone {
 
     @Enumerated(EnumType.STRING)
     private Density density;
+
+    @Transient
+    @JsonProperty("intensity")
+    private float intensity;
 
     public int getId() {
         return id;
@@ -61,6 +67,11 @@ public class Zone {
 
     public Zone setDate(DateTime date) {
         this.date = date;
+        return this;
+    }
+
+    public Zone setIntensity(float intensity) {
+        this.intensity = intensity;
         return this;
     }
 }

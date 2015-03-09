@@ -86,7 +86,12 @@ public class ZoneController {
         if(radius<1 || radius>maxRadius) radius = defaultRadius;
 
         try{
-            return new ResponseEntity(zoneService.getZones(latitude, longitude, radius), HttpStatus.OK);
+            //TODO calculate intensity
+            List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            for(int i=0; i<listZone.size(); i++){
+                listZone.get(i).setIntensity(1.0f);
+            }
+            return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
