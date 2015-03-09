@@ -3,6 +3,7 @@ package com.pmc.controller;
 import com.Application;
 import com.jayway.restassured.RestAssured;
 import com.pmc.dao.ZoneDAO;
+import com.pmc.model.Density;
 import com.pmc.model.Zone;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class ZoneControllerTest {
 
     @Before
     public void setUp() {
-        highDensityZone =new Zone().setLatitude(1.1).setLongitude(1.1).setDensity(Zone.Density.HIGH);
+        highDensityZone =new Zone().setLatitude(1.1).setLongitude(1.1).setDensity(Density.HIGH);
 
         //The database is cleared and re-initialized for each test so that we always
         // validate against a known state
@@ -58,7 +59,7 @@ public class ZoneControllerTest {
                 body("id", is(highDensityZone.getId())).
                 body("latitude", is((float)highDensityZone.getLatitude())).
                 body("longitude", is((float)highDensityZone.getLongitude())).
-                body("density", is(Zone.Density.HIGH.toString()));
+                body("density", is(Density.HIGH.toString()));
     }
 
     @Test
