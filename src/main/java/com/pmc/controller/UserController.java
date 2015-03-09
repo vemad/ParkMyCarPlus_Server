@@ -3,6 +3,7 @@ package com.pmc.controller;
 import com.pmc.model.User;
 import com.pmc.service.CustomUserDetailsService;
 import com.pmc.service.UserServiceException.UserNameAlreadyUsed;
+import com.pmc.service.UserServiceException.UsernameOrPasswordEmpty;
 import com.util.Message4Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,16 +31,12 @@ public class UserController {
         }catch (UserNameAlreadyUsed e) {
             return new ResponseEntity(new Message4Client("This username is already used"),
                                       new HttpHeaders(), HttpStatus.CONFLICT);
+        }catch (UsernameOrPasswordEmpty e){
+            return new ResponseEntity(new Message4Client("Username or Password should not be empty"),
+                    new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @RequestMapping(value ="/logout/success")
-    public @ResponseBody ResponseEntity<Message4Client> logout_success() {
-       
-        return new ResponseEntity(new Message4Client("User have been successfully logged out"),
-                                  new HttpHeaders(), HttpStatus.OK);
     }
 }

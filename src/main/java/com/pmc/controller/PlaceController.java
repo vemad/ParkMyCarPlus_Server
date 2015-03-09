@@ -73,8 +73,7 @@ public class PlaceController {
      * @return A message if the place have been deleted or null otherwise. Client should check response status
      * for more details on what happened
      */
-    // TODO Remove the 'delete' word in the url
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody ResponseEntity<Message4Client> deletePlaceById(@PathVariable("id") int id) {
         try {
             placeService.deletePlaceById(id);
@@ -106,7 +105,8 @@ public class PlaceController {
         Place placeReleased = null;
         try {
 
-            placeReleased = placeService.releasePlace(position.getLatitude(), position.getLongitude());
+            User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            placeReleased = placeService.releasePlace(position.getLatitude(), position.getLongitude(),user);
             return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.OK);
 
         } catch (PlaceNotFound placeNotFound) {
@@ -131,7 +131,8 @@ public class PlaceController {
         Place placeTaken = null;
         try {
 
-            placeTaken = placeService.takePlace(position.getLatitude(), position.getLongitude());
+            User user =(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            placeTaken = placeService.takePlace(position.getLatitude(), position.getLongitude(), user);
             return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.OK);
 
         } catch (PlaceAlreadyTaken placeAlreadyTaken) {

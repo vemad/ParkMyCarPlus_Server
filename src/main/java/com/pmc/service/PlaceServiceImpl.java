@@ -2,6 +2,7 @@ package com.pmc.service;
 
 import com.pmc.dao.PlaceDAO;
 import com.pmc.model.Place;
+import com.pmc.model.User;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
 import com.pmc.service.PlaceServiceException.PlaceNotFound;
@@ -36,14 +37,14 @@ public class PlaceServiceImpl implements PlaceService {
         placeDAO.delete(id);
     }
 
-    public Place releasePlace(double latitude, double longitude) throws PlaceNotFound, PlaceAlreadyReleased {
+    public Place releasePlace(double latitude, double longitude, User user) throws PlaceNotFound, PlaceAlreadyReleased {
         Place placeReleased = findPlaceByPosition(latitude, longitude);;
         if(placeReleased.isTaken()){
             placeReleased.releasePlace();
             placeDAO.save(placeReleased);
 
             //Log the event
-            logPlaceService.logPlaceReleased(placeReleased, latitude, longitude);
+            logPlaceService.logPlaceReleased(placeReleased,user, latitude, longitude);
 
             return placeReleased;
         }
@@ -52,7 +53,7 @@ public class PlaceServiceImpl implements PlaceService {
         }
     }
 
-    public Place takePlace(double latitude, double longitude) throws PlaceAlreadyTaken {
+    public Place takePlace(double latitude, double longitude, User user) throws PlaceAlreadyTaken {
 
         Place placeTaken = null;
 
@@ -66,8 +67,8 @@ public class PlaceServiceImpl implements PlaceService {
             placeDAO.save(placeTaken);
 
             //Log the event
-            logPlaceService.logPlaceCreated(placeTaken, latitude, longitude);
-            logPlaceService.logPlaceTaken(placeTaken, latitude, longitude);
+            logPlaceService.logPlaceCreated(placeTaken,user, latitude, longitude);
+            logPlaceService.logPlaceTaken(placeTaken,user, latitude, longitude);
 
             return placeTaken;
         }
@@ -80,7 +81,7 @@ public class PlaceServiceImpl implements PlaceService {
             placeDAO.save(placeTaken);
 
             //Log the event
-            logPlaceService.logPlaceTaken(placeTaken, latitude, longitude);
+            logPlaceService.logPlaceTaken(placeTaken,user, latitude, longitude);
 
             return placeTaken;
         }

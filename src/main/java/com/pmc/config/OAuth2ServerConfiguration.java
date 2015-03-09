@@ -45,7 +45,7 @@ public class OAuth2ServerConfiguration {
 
             http
                     .authorizeRequests()
-                    .antMatchers("/rest/places/delete/*").authenticated().
+                    .antMatchers("/rest/places/*").authenticated().
             and().
                     logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).
                     invalidateHttpSession(true).

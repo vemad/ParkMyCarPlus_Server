@@ -27,6 +27,7 @@ public class Place implements Serializable{
     @Column
     private double longitude;
 
+
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     @Column(name = "date_creation")
     private DateTime dateCreation;
