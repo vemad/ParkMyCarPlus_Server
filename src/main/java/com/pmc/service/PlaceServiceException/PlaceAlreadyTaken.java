@@ -5,4 +5,7 @@ package com.pmc.service.PlaceServiceException;
  * Created by Gaetan on 02/03/2015.
  */
 public class PlaceAlreadyTaken extends Exception{
+    public PlaceAlreadyTaken() {
+        super("Place already taken");
+    }
 }

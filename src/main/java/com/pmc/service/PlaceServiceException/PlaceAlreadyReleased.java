@@ -5,4 +5,7 @@ package com.pmc.service.PlaceServiceException;
  * Created by Gaetan on 02/03/2015.
  */
 public class PlaceAlreadyReleased extends Exception {
+    public PlaceAlreadyReleased() {
+        super("Place already released");
+    }
 }

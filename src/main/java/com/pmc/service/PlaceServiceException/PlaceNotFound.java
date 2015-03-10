@@ -5,4 +5,7 @@ package com.pmc.service.PlaceServiceException;
  * Created by Gaetan on 02/03/2015.
  */
 public class PlaceNotFound extends Exception {
+    public PlaceNotFound() {
+        super("Place not found");
+    }
 }

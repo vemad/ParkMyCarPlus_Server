@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@JsonIgnoreProperties({"authorities", "accountNonLocked", "password"})
+@JsonIgnoreProperties({"authorities", "accountNonLocked"})
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
