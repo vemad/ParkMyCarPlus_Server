@@ -1,8 +1,6 @@
 package com.pmc.config;
 
-import com.pmc.model.LogPlace;
-import com.pmc.model.Place;
-import com.pmc.model.Zone;
+import com.pmc.model.*;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +36,8 @@ public class AppConfig {
                 .addAnnotatedClasses(Place.class)
                 .addAnnotatedClasses(LogPlace.class)
                 .addAnnotatedClasses(Zone.class)
+                .addAnnotatedClasses(User.class)
+                .addAnnotatedClasses(Favorite.class)
                 .buildSessionFactory();
     }
 

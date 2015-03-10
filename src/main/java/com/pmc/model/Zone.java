@@ -16,8 +16,6 @@ import javax.persistence.*;
 @Table(name="zone")
 public class Zone {
 
-    public static enum Density {LOW, MEDIUM, HIGH };
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

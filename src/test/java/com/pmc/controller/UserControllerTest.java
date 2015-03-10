@@ -3,6 +3,7 @@ package com.pmc.controller;
 import com.Application;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
+import com.jayway.restassured.path.json.JsonPath;
 import com.pmc.dao.UserDao;
 import com.pmc.model.User;
 import org.apache.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static com.jayway.restassured.RestAssured.given;
+import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -66,6 +68,39 @@ public class UserControllerTest {
     }
 
     @Test
+    public void testUsernameShouldNotBeEmpty() throws Exception {
+        String emptyUsername="{ \"username\" : \"\", \"password\" : \"password\"}";
+
+        testIfCredentialAreEmptyString(emptyUsername);
+    }
+
+    @Test
+    public void testPasswordShouldNotBeEmpty() throws Exception {
+        String emptyPassword="{ \"username\" : \"username1\", \"password\" : \"\"}";
+
+        testIfCredentialAreEmptyString(emptyPassword);
+    }
+
+    @Test
+    public void testUsernameAndShouldNotBeEmpty() throws Exception {
+        String emptyUsernameAndPassword="{ \"username\" : \"\", \"password\" : \"\"}";
+
+        testIfCredentialAreEmptyString(emptyUsernameAndPassword);
+    }
+
+    public void testIfCredentialAreEmptyString(String userCredentials){
+        given().
+                body(userCredentials).
+        with().
+                contentType(ContentType.JSON).
+        when().
+                post("/rest/users/signup").
+        then().
+                statusCode(HttpStatus.SC_BAD_REQUEST).
+                body("message", is("Username or Password should not be empty"));
+    }
+
+    @Test
     public void testUsernameShouldBeUnique() throws Exception {
         String userData="{ \"username\" : \"username\", \"password\" : \"password\"}";
 
@@ -84,18 +119,20 @@ public class UserControllerTest {
     @Test
     public void testHowToAuthenticateAClient() throws Exception {
         String data= "password="+user.getPassword()+"&username="+user.getUsername()+
-                     "&grant_type=password&scope=read%20write";
+                     "&grant_type=password&scope=read write";
 
         String json= given().
-                contentType("application/x-www-form-urlencoded").
-                body(data).
-                auth().basic("pmcAndroid", "123456").
-        when().
-                post("/oauth/token").asString();
+                            log().all().
+                            contentType("application/x-www-form-urlencoded").
+                            body(data).
+                            auth().preemptive().basic("pmcAndroid", "123456").
+                    expect().
+                            log().all().
 
-        System.err.println(json);
-        //JsonPath jsonPath = new JsonPath(json);
-        //given().auth().oauth2(jsonPath.getString("access_token"));
+                    when().
+                            post("/oauth/token").asString();
 
+        JsonPath jsonPath = new JsonPath(json);
+        assertNotNull(jsonPath.getString("access_token"));
     }
 }

@@ -25,6 +25,10 @@ public class LogPlace {
     @Enumerated(EnumType.STRING)
     private Action action;
 
+    @ManyToOne(cascade = {CascadeType.DETACH} )
+    @JoinColumn(name="user_id")
+    private User user;
+
     @Column
     @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     private DateTime date;
@@ -34,12 +38,13 @@ public class LogPlace {
     @Column
     private double longitude;
 
-    public LogPlace(Place place, Action action, double latitude, double longitude) {
+    public LogPlace(Place place, Action action, User user, double latitude, double longitude) {
         this.place = place;
         this.action = action;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = new DateTime();
+        this.user = user;
     }
 
     public LogPlace() {
