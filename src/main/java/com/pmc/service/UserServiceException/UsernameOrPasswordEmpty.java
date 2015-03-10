@@ -6,4 +6,7 @@ package com.pmc.service.UserServiceException;
  * @author stephaneki
  */
 public class UsernameOrPasswordEmpty extends Exception {
+    public UsernameOrPasswordEmpty() {
+        super("Username or password is empty");
+    }
 }

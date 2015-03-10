@@ -7,6 +7,7 @@ import com.jayway.restassured.path.json.JsonPath;
 import com.pmc.dao.UserDao;
 import com.pmc.model.User;
 import org.apache.http.HttpStatus;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,19 +43,22 @@ public class UserControllerTest {
     public void setUp() {
 
         user = new User().setUsername("username").setPassword("password");
-
-        //The database is cleared and re-initialized for each test so that we always
-        // validate against a known state
-        userDao.deleteAll();
         userDao.save(user);
 
         RestAssured.port = port;
     }
 
+    @After
+    public void tearDown(){
+        //The database is cleared and re-initialized for each test so that we always
+        // validate against a known state
+        userDao.deleteAll();
+    }
+
     @Test
     public void testUserCanBeCreated() throws Exception {
 
-        String user="{ \"username\" : \"username1\", \"password\" : \"password\"}";
+        String user="{ \"username\" : \"username1\", \"password\" : \"password1\"}";
 
         given().
                 body(user).
@@ -76,7 +80,7 @@ public class UserControllerTest {
 
     @Test
     public void testPasswordShouldNotBeEmpty() throws Exception {
-        String emptyPassword="{ \"username\" : \"username1\", \"password\" : \"\"}";
+        String emptyPassword="{ \"username\" : \"username11\", \"password\" : \"\"}";
 
         testIfCredentialAreEmptyString(emptyPassword);
     }
