@@ -2,8 +2,8 @@ package com.pmc.controller;
 
 import com.pmc.model.Favorite;
 import com.pmc.model.User;
-import com.pmc.service.FavoriteNotFound;
 import com.pmc.service.FavoriteService;
+import com.pmc.service.FavoriteServiceException.FavoriteNotFound;
 import com.util.Message4Client;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

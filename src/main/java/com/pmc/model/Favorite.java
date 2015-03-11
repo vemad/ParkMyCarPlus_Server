@@ -29,6 +29,10 @@ public class Favorite {
     @Column
     private String address;
 
+    @ManyToOne(cascade = {CascadeType.DETACH})
+    @JoinColumn(name="user_id")
+    private User user;
+
     @Transient
     private float intensity;
 
@@ -36,12 +40,13 @@ public class Favorite {
     private Density density;
 
 
-    public Favorite(double latitude, double longitude, String address) {
+    public Favorite(double latitude, double longitude, String address, User user) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.density=null;
         this.intensity=DEFAULT_INTENSITY;
         this.address=address;
+        this.user=user;
     }
 
     public Favorite() {
@@ -79,5 +84,10 @@ public class Favorite {
 
     public String getAddress() {
         return address;
+    }
+
+    public Favorite setUser(User user) {
+        this.user = user;
+        return this;
     }
 }

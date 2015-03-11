@@ -20,10 +20,10 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Arrays;
+
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created on 09/03/15.
@@ -55,19 +55,17 @@ public class FavoriteControllerTest {
     @Before
     public void setUp() {
 
-        fav1 = new Favorite(1.1, 1.1, "50 rue du village");
-        fav2 = new Favorite(2.2, 2.2, "60 rue de la paix");
-        fav3 = new Favorite(3.3, 3.3, "80 rue de la joie");
-
-        userWith2Favs = new User().setUsername("username").setPassword("password").addFavorite(fav1).
-                                                                                   addFavorite(fav2);
+        userWith2Favs = new User().setUsername("username").setPassword("password");
         userDao.save(userWith2Favs);
 
-        userWith1Favs= new User().addFavorite(fav3).setUsername("joe").setPassword("doe");
+        userWith1Favs= new User().setUsername("joe").setPassword("doe");
         userDao.save(userWith1Favs);
 
+        fav1 = new Favorite(1.1, 1.1, "50 rue du village",userWith2Favs);
+        fav2 = new Favorite(2.2, 2.2, "60 rue de la paix", userWith2Favs);
+        fav3 = new Favorite(3.3, 3.3, "80 rue de la joie", userWith1Favs);
 
-
+        favoriteDAO.save(Arrays.asList(fav1,fav2,fav3));
         RestAssured.port = port;
     }
 
@@ -117,6 +115,8 @@ public class FavoriteControllerTest {
                 body("address", is(address)).
                 body("density", notNullValue()).
                 body("intensity", notNullValue());
+
+
     }
 
     @Test

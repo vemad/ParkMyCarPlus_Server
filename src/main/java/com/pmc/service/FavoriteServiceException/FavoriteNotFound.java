@@ -1,4 +1,4 @@
-package com.pmc.service;
+package com.pmc.service.FavoriteServiceException;
 
 /**
  * Created on 10/03/15.

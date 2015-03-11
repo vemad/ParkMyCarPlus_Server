@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
 
 @Entity
 @JsonIgnoreProperties({"authorities", "accountNonLocked"})
@@ -27,10 +27,6 @@ public class User implements UserDetails {
     @NotEmpty
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JoinColumn(name = "user_id")
-    private List<Favorite> favorites = new ArrayList<Favorite>();
-
     public User() {
     }
 
@@ -43,7 +39,6 @@ public class User implements UserDetails {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.favorites = user.getFavorites();
     }
 
     public int getId() {
@@ -55,9 +50,6 @@ public class User implements UserDetails {
         return this;
     }
 
-    public List<Favorite> getFavorites() {
-        return favorites;
-    }
 
     public String getUsername() {
         return username;
@@ -114,23 +106,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    public User addFavorite(Favorite favorite) {
-        favorites.add(favorite);
-        return this;
-    }
-
-    public User removeFavorite(Favorite favorite) {
-        favorites.remove(favorite);
-        return this;
-    }
-
-    //TODO Delete this or refactor it
-    @Override
-    public String toString() {
-        String s1 ="";
-        for(Favorite f :favorites){
-            s1+=Integer.toString(f.getId())+' ';
-        }
-        return s1;
-    }
 }
