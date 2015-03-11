@@ -4,9 +4,12 @@ import com.Application;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.path.json.JsonPath;
+import com.pmc.dao.FavoriteDAO;
 import com.pmc.dao.UserDao;
+import com.pmc.model.Favorite;
 import com.pmc.model.User;
 import org.apache.http.HttpStatus;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -38,19 +42,44 @@ public class FavoriteControllerTest {
     @Autowired
     private UserDao userDao;
 
-    private User user;
+    @Autowired
+    private FavoriteDAO favoriteDAO;
+
+    private User userWith2Favs;
+    private User userWith1Favs;
+    private Favorite fav1;
+    private Favorite fav2;
+    private Favorite fav3;
     private String token;
 
     @Before
     public void setUp() {
 
-        user = new User().setUsername("username").setPassword("password");
-        userDao.save(user);
+        fav1 = new Favorite(1.1, 1.1, "50 rue du village");
+        fav2 = new Favorite(2.2, 2.2, "60 rue de la paix");
+        fav3 = new Favorite(3.3, 3.3, "80 rue de la joie");
+
+        userWith2Favs = new User().setUsername("username").setPassword("password").addFavorite(fav1).
+                                                                                   addFavorite(fav2);
+        userDao.save(userWith2Favs);
+
+        userWith1Favs= new User().addFavorite(fav3).setUsername("joe").setPassword("doe");
+        userDao.save(userWith1Favs);
+
+
 
         RestAssured.port = port;
     }
 
-    public void authenticate(){
+    @After
+    public void tearDown() throws Exception {
+        token=null;
+        favoriteDAO.deleteAll();
+        userDao.deleteAll();
+
+    }
+
+    public void authenticate(User user){
         String data= "password="+user.getPassword()+"&username="+user.getUsername()+
                 "&grant_type=password&scope=read write";
 
@@ -65,22 +94,22 @@ public class FavoriteControllerTest {
 
     @Test
     public void testFavCanBeCreated() throws Exception {
-        authenticate();
-        float latitude=1.2f;
-        float longitude=2.3f;
-        String address="50 rue La patate douce";
-        String fav= "{\"latitude\": "+latitude+", \"longitude\": "+longitude+"," +
-                " \"address\":\""+address+"\"}";
+        authenticate(userWith2Favs);
+        float latitude = 1.2f;
+        float longitude = 2.3f;
+        String address = "50 rue La patate douce";
+        String fav = "{\"latitude\": "+ latitude +", \"longitude\": "+ longitude +"," +
+                " \"address\":\""+ address +"\"}";
         given().
                 header("Authorization", "Bearer "+token).
                 contentType(ContentType.JSON).
                 body(fav).
         when().
-                //log().all().
+                log().all().
                 post("/rest/favorites").
 
         then().
-                //log().all().
+                log().all().
                 statusCode(HttpStatus.SC_CREATED).
                 body("id",notNullValue()).
                 body("latitude", is(latitude)).
@@ -88,5 +117,55 @@ public class FavoriteControllerTest {
                 body("address", is(address)).
                 body("density", notNullValue()).
                 body("intensity", notNullValue());
+    }
+
+    @Test
+    public void testFavoritesCanBeFetched() throws Exception {
+        authenticate(userWith2Favs);
+
+        given().
+                header("Authorization", "Bearer "+token).
+                contentType(ContentType.JSON).
+        when().
+                get("/rest/favorites").
+        then().
+                //log().all().
+                statusCode(HttpStatus.SC_OK).
+                body("id", hasItems(fav1.getId(), fav2.getId())).
+                body("latitude",hasItems((float)fav1.getLatitude(), (float)fav2.getLatitude())).
+                body("longitude",hasItems((float)fav1.getLongitude(), (float)fav2.getLongitude())).
+                body("address", hasItems(fav1.getAddress(),fav2.getAddress())).
+                body("intensity", hasItems(fav1.getIntensity(), fav2.getIntensity())).
+                body("density", hasItems("LOW", "LOW")); //TODO Refactoring
+    }
+
+    @Test
+    public void testFavCanBeDeleted() throws Exception {
+        authenticate(userWith2Favs);
+
+        given().
+                header("Authorization", "Bearer "+token).
+                contentType(ContentType.JSON).
+        when().
+                delete("/rest/favorites/{id}", fav1.getId()).
+        then().
+                statusCode(HttpStatus.SC_OK).
+                body("message", is("Favorite <" + fav1.getId() + "> deleted"));
+
+    }
+
+    @Test
+    public void testIfFavoriteDoesNotExist() throws Exception {
+        authenticate(userWith1Favs);
+
+        given().
+                header("Authorization", "Bearer "+token).
+                contentType(ContentType.JSON).
+        when().
+                delete("/rest/favorites/{id}", 100).
+        then().
+                statusCode(HttpStatus.SC_NOT_FOUND).
+                body("message", is("Favorite not found"));
+
     }
 }

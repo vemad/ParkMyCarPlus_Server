@@ -22,7 +22,6 @@ public class UserController {
     @Autowired
     private CustomUserDetailsService userService;
 
-
     @RequestMapping(value ="/signup", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<Message4Client> signUp(@RequestBody User user) {
         try{
