@@ -2,6 +2,9 @@ package com.pmc.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -31,6 +34,8 @@ public class User implements UserDetails {
     @JoinColumn(name="taken_place_id")
     private Place takenPlace;
 
+    private int score;
+
     public User() {}
 
     public User(User user) {
@@ -38,6 +43,7 @@ public class User implements UserDetails {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
+        this.score = user.score;
     }
 
     public int getId() {
@@ -58,11 +64,19 @@ public class User implements UserDetails {
         return this;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
     public Place getPlace() { return takenPlace; }
+
+    public int getScore() { return this.score; }
+
+    public User setScore(int score) {
+        this.score = score;
+        return this;
+    }
 
     public User takePlace(Place place) {
         this.takenPlace = place;
@@ -74,6 +88,7 @@ public class User implements UserDetails {
         return this;
     }
 
+    @JsonProperty
     public User setPassword(String password) {
         this.password = password;
         return this;
@@ -102,6 +117,11 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @JsonProperty("level")
+    public UserLevel getLevel(){
+        return UserLevel.getLevel(this.score);
     }
 
 }

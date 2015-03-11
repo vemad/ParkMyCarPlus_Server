@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -39,5 +40,11 @@ public class UserController {
             e.printStackTrace();
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @RequestMapping(value ="", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<User> getUser(){
+        User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new ResponseEntity(user, new HttpHeaders(), HttpStatus.OK);
     }
 }
