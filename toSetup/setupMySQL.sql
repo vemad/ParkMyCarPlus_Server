@@ -12,12 +12,13 @@ USE `pmc`;
 CREATE TABLE IF NOT EXISTS `logplace` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `place_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `action` varchar(10) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
 --
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `place` (
   `date_last_release` timestamp NULL DEFAULT NULL,
   `date_last_take` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=125 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Structure de la table `user`
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 --
 -- Structure de la table `zone`
@@ -58,4 +59,19 @@ CREATE TABLE IF NOT EXISTS `zone` (
   `density` varchar(10) NOT NULL,
   `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+--
+-- Structure de la table `favorite`
+--
+CREATE TABLE IF NOT EXISTS `favorite` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `longitude` double NOT NULL,
+  `latitude` double NOT NULL,
+  `address` varchar(50) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
