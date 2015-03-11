@@ -2,6 +2,7 @@ package com.pmc.service;
 
 
 import com.pmc.dao.UserDao;
+import com.pmc.model.Place;
 import com.pmc.model.User;
 import com.pmc.service.UserServiceException.UsernameAlreadyUsed;
 import com.pmc.service.UserServiceException.UsernameOrPasswordEmpty;
@@ -49,6 +50,16 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameAlreadyUsed();
         }
         return userDao.save(user);
+    }
+
+    public void releasePlace(User user){
+        user.releasePlace();
+        userDao.save(user);
+    }
+
+    public void takePlace(User user, Place place){
+        user.takePlace(place);
+        userDao.save(user);
     }
 
 }

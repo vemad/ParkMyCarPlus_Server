@@ -5,6 +5,7 @@ import com.pmc.model.User;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
 import com.pmc.service.PlaceServiceException.PlaceNotFound;
+import com.pmc.service.PlaceServiceException.PlaceNotUsedByUser;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface PlaceService {
     public void deletePlaceById(int id);
     public Place takePlace(double latitude, double longitude,User user) throws PlaceAlreadyTaken;
     public List<Place> listPlacesByPosition(double latitude, double longitude, int radius);
-    public Place releasePlace(double latitude, double longitude, User user) throws PlaceNotFound, PlaceAlreadyReleased;
+    public Place releasePlace(double latitude, double longitude, User user) throws PlaceNotFound, PlaceAlreadyReleased, PlaceNotUsedByUser;
     public List<Place> findNearestPlacesByPosition(double latitude, double longitude);
 
 }

@@ -44,9 +44,18 @@ public class Place implements Serializable{
     @JsonProperty("isTaken")
     private boolean isTaken;
 
-    public Place(){
+    @ManyToOne(cascade = {CascadeType.DETACH}, fetch = FetchType.LAZY )
+    @JoinColumn(name="creator_user_id")
+    private User creator;
+
+    public Place(){}
+
+    public Place(User user){
         this.dateCreation = new DateTime();
+        this.creator = user;
     }
+
+
 
     public int getId() {
         return id;
@@ -56,30 +65,8 @@ public class Place implements Serializable{
         return latitude;
     }
 
-    public Place setLatitude(double latitude) {
-        this.latitude = latitude;
-        return this;
-    }
-
     public double getLongitude() {
         return longitude;
-    }
-
-    public Place setLongitude(double longitude) {
-        this.longitude = longitude;
-        return this;
-    }
-    public boolean isTaken() { return isTaken; }
-
-    public Place takePlace() {
-        this.dateLastTake = new DateTime();
-        this.isTaken = true;
-        return this;
-    }
-    public Place releasePlace() {
-        this.dateLastRelease = new DateTime();
-        this.isTaken = false;
-        return this;
     }
 
     public DateTime getDateCreation() {
@@ -92,5 +79,30 @@ public class Place implements Serializable{
 
     public DateTime getDateLastTake() {
         return dateLastTake;
+    }
+
+
+
+    public Place setLatitude(double latitude) {
+        this.latitude = latitude;
+        return this;
+    }
+
+    public Place setLongitude(double longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+
+    public boolean isTaken() { return isTaken; }
+
+    public Place takePlace() {
+        this.dateLastTake = new DateTime();
+        this.isTaken = true;
+        return this;
+    }
+    public Place releasePlace() {
+        this.dateLastRelease = new DateTime();
+        this.isTaken = false;
+        return this;
     }
 }

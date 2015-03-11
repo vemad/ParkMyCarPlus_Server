@@ -34,6 +34,10 @@ public class User implements UserDetails {
     public User() {
     }
 
+    @ManyToOne(cascade = {CascadeType.DETACH})
+    @JoinColumn(name="taken_place_id")
+    private Place takenPlace;
+
     public User(User user) {
         super();
         this.id = user.getId();
@@ -66,6 +70,18 @@ public class User implements UserDetails {
 
     public String getPassword() {
         return password;
+    }
+
+    public Place getPlace() { return takenPlace; }
+
+    public User takePlace(Place place) {
+        this.takenPlace = place;
+        return this;
+    }
+
+    public User releasePlace() {
+        this.takenPlace = null;
+        return this;
     }
 
     public User setPassword(String password) {

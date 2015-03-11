@@ -6,6 +6,9 @@ import com.pmc.model.User;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
 import com.pmc.service.PlaceServiceException.PlaceNotFound;
+import com.pmc.service.PlaceServiceException.PlaceNotUsedByUser;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,6 +27,9 @@ public class PlaceServiceImpl implements PlaceService {
     private LogPlaceService logPlaceService;
 
     @Resource
+    private CustomUserDetailsService userService;
+
+    @Resource
     private PlaceDAO placeDAO;
 
     public PlaceServiceImpl() {
@@ -37,11 +43,17 @@ public class PlaceServiceImpl implements PlaceService {
         placeDAO.delete(id);
     }
 
-    public Place releasePlace(double latitude, double longitude, User user) throws PlaceNotFound, PlaceAlreadyReleased {
-        Place placeReleased = findPlaceByPosition(latitude, longitude);;
-        if(placeReleased.isTaken()){
+    public Place releasePlace(double latitude, double longitude, User user) throws PlaceNotFound, PlaceAlreadyReleased, PlaceNotUsedByUser {
+        //Place placeReleased = findPlaceByPosition(latitude, longitude);
+        Place placeReleased = user.getPlace();
+        if(placeReleased == null){
+            throw new PlaceNotUsedByUser();
+        }
+        else if(placeReleased.isTaken()){
+
             placeReleased.releasePlace();
             placeDAO.save(placeReleased);
+            userService.releasePlace(user);
 
             //Log the event
             logPlaceService.logPlaceReleased(placeReleased,user, latitude, longitude);
@@ -55,16 +67,20 @@ public class PlaceServiceImpl implements PlaceService {
 
     public Place takePlace(double latitude, double longitude, User user) throws PlaceAlreadyTaken {
 
-        Place placeTaken = null;
+        Place placeTaken = user.getPlace();
+        if(placeTaken != null){
+            throw new PlaceAlreadyTaken();
+        }
 
         try {
             placeTaken = findPlaceByPosition(latitude, longitude);
 
         } catch (PlaceNotFound placeNotFound) {
             //If no place found,create one
-            placeTaken = new Place();
+            placeTaken = new Place(user);
             placeTaken.setLatitude(latitude).setLongitude(longitude).takePlace();
             placeDAO.save(placeTaken);
+            userService.takePlace(user, placeTaken);
 
             //Log the event
             logPlaceService.logPlaceCreated(placeTaken,user, latitude, longitude);
@@ -79,6 +95,7 @@ public class PlaceServiceImpl implements PlaceService {
         else{
             placeTaken.takePlace();
             placeDAO.save(placeTaken);
+            userService.takePlace(user, placeTaken);
 
             //Log the event
             logPlaceService.logPlaceTaken(placeTaken,user, latitude, longitude);

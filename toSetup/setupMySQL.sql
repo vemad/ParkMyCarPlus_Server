@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `logplace` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
+
 --
 -- Structure de la table `place`
 --
@@ -33,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `place` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_last_release` timestamp NULL DEFAULT NULL,
   `date_last_take` timestamp NULL DEFAULT NULL,
+  `creator_user_id` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -44,9 +46,11 @@ CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(11) NOT NULL,
   `password` varchar(11) NOT NULL,
+  `taken_place_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 
 --
 -- Structure de la table `zone`

@@ -6,6 +6,7 @@ import com.pmc.service.PlaceService;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
 import com.pmc.service.PlaceServiceException.PlaceNotFound;
+import com.pmc.service.PlaceServiceException.PlaceNotUsedByUser;
 import com.util.Message4Client;
 import com.util.Position;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -60,7 +61,7 @@ public class PlaceController {
         }catch (IllegalArgumentException e){
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }catch (Exception e){
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -85,7 +86,7 @@ public class PlaceController {
         }catch (IllegalArgumentException e){
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -104,17 +105,18 @@ public class PlaceController {
     public @ResponseBody ResponseEntity<Place> placeReleased(@RequestBody Position position ){
         Place placeReleased = null;
         try {
-
             User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             placeReleased = placeService.releasePlace(position.getLatitude(), position.getLongitude(),user);
             return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.OK);
 
         } catch (PlaceNotFound placeNotFound) {
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        } catch (PlaceNotUsedByUser placeNotUsedByUser) {
+            return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (PlaceAlreadyReleased placeAlreadyReleased) {
             return new ResponseEntity(placeReleased, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (Exception e){
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -138,7 +140,7 @@ public class PlaceController {
         } catch (PlaceAlreadyTaken placeAlreadyTaken) {
             return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.CONFLICT);
         } catch (Exception e){
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
