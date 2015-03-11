@@ -65,6 +65,10 @@ It's recommended to don't use the root user for the application so you most crea
 ```sh
 GRANT SELECT, INSERT, UPDATE, DELETE ON pmc.* TO 'pmcServer'@'localhost' IDENTIFIED BY 'pmcServerPwd';
 ```
+If you want previously remove all table from PMC, use this command:
+```
+DROP TABLE `logplace`, `place`, `user`, `zone`, `favorite`;
+```
 The default user for the application is __pmcServer__ with the password __pmcServerPwd__ but you can change that in the file __/home/OT-SIMS/PMC_Server/src/main/java/com/pmc/config/AppConfig.java__.
 
 You can now disconnect from MySQL with the commmand `exit`.
