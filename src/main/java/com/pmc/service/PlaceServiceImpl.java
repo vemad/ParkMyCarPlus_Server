@@ -7,8 +7,6 @@ import com.pmc.service.PlaceServiceException.PlaceAlreadyReleased;
 import com.pmc.service.PlaceServiceException.PlaceAlreadyTaken;
 import com.pmc.service.PlaceServiceException.PlaceNotFound;
 import com.pmc.service.PlaceServiceException.PlaceNotUsedByUser;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
