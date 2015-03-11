@@ -68,6 +68,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         for(Favorite fav: user.getFavorites()){
             if(fav.getId()==id){
                 user.removeFavorite(fav);
+
                 userDao.save(user);
                 favoriteDAO.delete(fav); // NASTY !!!
                 return;

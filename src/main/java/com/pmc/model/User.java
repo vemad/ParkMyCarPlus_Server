@@ -27,7 +27,7 @@ public class User implements UserDetails {
     @NotEmpty
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_id")
     private List<Favorite> favorites = new ArrayList<Favorite>();
 

@@ -98,7 +98,7 @@ public class PlaceServiceImpl implements PlaceService {
             userService.takePlace(user, placeTaken);
 
             //Log the event
-            logPlaceService.logPlaceTaken(placeTaken,user, latitude, longitude);
+            logPlaceService.logPlaceTaken(placeTaken, user, latitude, longitude);
 
             return placeTaken;
         }

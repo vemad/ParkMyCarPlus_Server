@@ -30,6 +30,7 @@ public class LogPlaceServiceImpl implements LogPlaceService {
         this.saveLogPlace(new LogPlace(place, LogPlace.Action.create,user, latitude, longitude));
     }
 
+    //TODO refactoring
     public void saveLogPlace(LogPlace logPlace){
         logPlaceDAO.save(logPlace);
     }
