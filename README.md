@@ -79,6 +79,10 @@ To build the project, run the command graddle build:
 cd /home/OT-SIMS/PMC_Server
 sudo gradle build
 ```
+HINT: You can build your project without running your tests
+```sh
+sudo gradle build -x test
+```
 
 You can run the server with the command `gradle run`.
 To stop it, use `Ctrl+C`.
