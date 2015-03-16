@@ -39,14 +39,6 @@ public class User implements UserDetails {
 
 	private int score;
 
-    public User(User user) {
-        super();
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.score = user.score;
-    }
-
     public int getId() {
         return id;
     }
@@ -75,11 +67,6 @@ public class User implements UserDetails {
 
     public int getScore() { return this.score; }
 
-    public User setScore(int score) {
-        this.score = score;
-        return this;
-    }
-
     public User takePlace(Place place) {
         this.takenPlace = place;
         return this;
@@ -88,6 +75,11 @@ public class User implements UserDetails {
     public User releasePlace() {
         this.takenPlace = null;
         return this;
+    }
+
+    public void addScore(int value){
+        this.score += value;
+        if(this.score<0) this.score = 0;
     }
 
     @JsonProperty

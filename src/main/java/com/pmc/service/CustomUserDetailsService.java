@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
         }
-        return new User(user);
+        return user;
     }
 
 
@@ -51,14 +51,20 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userDao.save(user);
     }
 
-    public void releasePlace(User user){
+    public void releasePlace(User user, int scoreAdded){
         user.releasePlace();
+        user.addScore(scoreAdded);
         userDao.save(user);
     }
 
-    public void takePlace(User user, Place place){
+    public void takePlace(User user, Place place, int scoreAdded){
         user.takePlace(place);
+        user.addScore(scoreAdded);
         userDao.save(user);
     }
 
+    public void addScore(User user, int value){
+        user.addScore(value);
+        userDao.save(user);
+    }
 }

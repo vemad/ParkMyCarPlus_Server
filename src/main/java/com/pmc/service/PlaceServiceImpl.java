@@ -19,7 +19,13 @@ import java.util.List;
 public class PlaceServiceImpl implements PlaceService {
 
     /*Some Parameters*/
-    private static final int maxRadiusOfPlace = 3;
+    private static final int MAX_RADIUS_OF_PLACE = 3;
+    private static final int MAX_RADIUS_ALLOW_TO_RELEASE_PLACE = 10;
+
+    private static final int SCORE_ADDED_WHEN_TAKEN = 5;
+    private static final int SCORE_ADDED_WHEN_RELEASED = 5;
+    private static final int SCORE_ADDED_WHEN_RELEASED_NOT_ON_PLACE = -5; //TODO refactoring
+    private static final int SCORE_ADDED_WHEN_TAKEN_NEW_PLACE = 10;
 
     @Resource
     private LogPlaceService logPlaceService;
@@ -42,16 +48,31 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     public Place releasePlace(double latitude, double longitude, User user) throws PlaceNotFound, PlaceAlreadyReleased, PlaceNotUsedByUser {
-        //Place placeReleased = findPlaceByPosition(latitude, longitude);
+
         Place placeReleased = user.getPlace();
         if(placeReleased == null){
             throw new PlaceNotUsedByUser();
         }
         else if(placeReleased.isTaken()){
-
+            //Release the place of the user
             placeReleased.releasePlace();
             placeDAO.save(placeReleased);
-            userService.releasePlace(user);
+
+            //Check if the place is really around the user for the score
+            List<Place> placesAroundUser = placeDAO.findNearestPlaces(latitude, longitude, MAX_RADIUS_ALLOW_TO_RELEASE_PLACE);
+            boolean userIsAroundPlace = false;
+            for(Place p : placesAroundUser){
+                if(p.getId() == placeReleased.getId()){
+                    userIsAroundPlace=true;
+                    break;
+                }
+            }
+            if(userIsAroundPlace){
+                userService.releasePlace(user, SCORE_ADDED_WHEN_RELEASED);
+            }
+            else{
+                userService.releasePlace(user, SCORE_ADDED_WHEN_RELEASED_NOT_ON_PLACE);
+            }
 
             //Log the event
             logPlaceService.logPlaceReleased(placeReleased,user, latitude, longitude);
@@ -78,7 +99,7 @@ public class PlaceServiceImpl implements PlaceService {
             placeTaken = new Place(user);
             placeTaken.setLatitude(latitude).setLongitude(longitude).takePlace();
             placeDAO.save(placeTaken);
-            userService.takePlace(user, placeTaken);
+            userService.takePlace(user, placeTaken, SCORE_ADDED_WHEN_TAKEN_NEW_PLACE);
 
             //Log the event
             logPlaceService.logPlaceCreated(placeTaken,user, latitude, longitude);
@@ -93,7 +114,7 @@ public class PlaceServiceImpl implements PlaceService {
         else{
             placeTaken.takePlace();
             placeDAO.save(placeTaken);
-            userService.takePlace(user, placeTaken);
+            userService.takePlace(user, placeTaken, SCORE_ADDED_WHEN_TAKEN);
 
             //Log the event
             logPlaceService.logPlaceTaken(placeTaken, user, latitude, longitude);
@@ -117,7 +138,7 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     public List<Place> findNearestPlacesByPosition(double latitude, double longitude){
-        return placeDAO.findNearestPlaces(latitude, longitude, maxRadiusOfPlace);
+        return placeDAO.findNearestPlaces(latitude, longitude, MAX_RADIUS_OF_PLACE);
     }
 
 }

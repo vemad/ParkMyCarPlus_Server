@@ -1,10 +1,12 @@
 package com.pmc.controller;
 
+import com.pmc.model.User;
 import com.pmc.model.Zone;
 import com.pmc.service.ZoneService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -63,7 +65,8 @@ public class ZoneController {
     @RequestMapping(value = "/indicate", method = RequestMethod.POST)
     public ResponseEntity<Zone> indicateZone(@RequestBody Zone zone) {
         try{
-            return new ResponseEntity(zoneService.save(zone), new HttpHeaders(), HttpStatus.OK);
+            User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return new ResponseEntity(zoneService.save(user, zone), new HttpHeaders(), HttpStatus.OK);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,7 +75,6 @@ public class ZoneController {
     }
 
     /**
-     *
      * @param latitude latitude of position specified.
      * @param longitude longitude of the position specified.
      * @param radius 
