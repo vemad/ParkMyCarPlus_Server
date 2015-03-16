@@ -14,7 +14,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@JsonIgnoreProperties({"authorities", "accountNonLocked"})
+@JsonIgnoreProperties({"enabled", "authorities", "accountNonLocked"})
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -30,13 +30,14 @@ public class User implements UserDetails {
     @NotEmpty
     private String password;
 
+    public User() {
+    }
+
     @ManyToOne(cascade = {CascadeType.DETACH})
     @JoinColumn(name="taken_place_id")
     private Place takenPlace;
 
-    private int score;
-
-    public User() {}
+	private int score;
 
     public User(User user) {
         super();
@@ -54,6 +55,7 @@ public class User implements UserDetails {
         this.id = id;
         return this;
     }
+
 
     public String getUsername() {
         return username;

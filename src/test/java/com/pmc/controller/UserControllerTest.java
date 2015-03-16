@@ -43,6 +43,9 @@ public class UserControllerTest {
     public void setUp() {
 
         user = new User().setUsername("username").setPassword("password");
+        //The database is cleared and re-initialized for each test so that we always
+        // validate against a known state
+        userDao.deleteAll();
         userDao.save(user);
 
         RestAssured.port = port;
@@ -50,9 +53,7 @@ public class UserControllerTest {
 
     @After
     public void tearDown(){
-        //The database is cleared and re-initialized for each test so that we always
-        // validate against a known state
-        userDao.deleteAll();
+
     }
 
     @Test
@@ -136,7 +137,6 @@ public class UserControllerTest {
                     when().
                             post("/oauth/token").asString();
 
-        JsonPath jsonPath = new JsonPath(json);
-        assertNotNull(jsonPath.getString("access_token"));
+        assertNotNull(new JsonPath(json).getString("access_token"));
     }
 }

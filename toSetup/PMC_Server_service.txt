@@ -1,13 +1,13 @@
 #!/bin/sh
 SERVICE_NAME=PMC_Server
-PATH_TO_JAR=/home/OT-SIMS/PMC_Server/build/libs/pmc-rest-service-0.1.0.jar
+PATH_TO_JAR=/home/OT-SIMS/PMC_Server/build/libs/pmc-rest-service-0.2.0.jar
 PID_PATH_NAME=/var/tmp/PMC_Server.pid
 LOG_PATH_NAME=/var/log/PMC_Server.log
 case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-            nohup java -jar $PATH_TO_JAR /tmp 2>> /dev/null >> $LOG_PATH_NAME &
+            nohup java -Xmx256m -jar $PATH_TO_JAR /tmp 2>> /dev/null >> $LOG_PATH_NAME &
                         echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else
