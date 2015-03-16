@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -64,6 +65,7 @@ public class OAuth2ServerConfiguration {
 
         @Autowired
         private Environment env;
+
 
         private TokenStore tokenStore = new InMemoryTokenStore();
 

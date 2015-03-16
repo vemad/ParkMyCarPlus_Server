@@ -27,7 +27,7 @@ public class UserController {
         try{
 
             userService.SaveUser(user);
-            return new ResponseEntity(new Message4Client("New user created"), new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity(new Message4Client("New user created"), new HttpHeaders(), HttpStatus.CREATED);
         }catch (UsernameAlreadyUsed e) {
             return new ResponseEntity(new Message4Client("This username is already used"),
                                       new HttpHeaders(), HttpStatus.CONFLICT);

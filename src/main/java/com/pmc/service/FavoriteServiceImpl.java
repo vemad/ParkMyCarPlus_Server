@@ -21,6 +21,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     private static final float DEFAULT_INTENSITY = 1;
     private static final Density DEFAULT_DENSITY = Density.LOW;
 
+    private float calculateIntensity(Favorite favorite){
+        return DEFAULT_INTENSITY;
+    }
+
+    private Density calculateDensity(Favorite favorite){
+        return DEFAULT_DENSITY;
+    }
+
     @Autowired
     private FavoriteDAO favoriteDAO;
 
