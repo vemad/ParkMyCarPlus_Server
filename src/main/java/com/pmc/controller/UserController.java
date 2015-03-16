@@ -40,7 +40,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value ="", method = RequestMethod.GET)
+    @RequestMapping(value ="/current", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<User> getUser(){
         User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return new ResponseEntity(user, new HttpHeaders(), HttpStatus.OK);

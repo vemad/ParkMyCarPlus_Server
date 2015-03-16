@@ -20,9 +20,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- *
  * Default controller for url concerning Places
- * @author stephane Ki
+ * @author stephaneki
  */
 @RestController
 @RequestMapping("rest/places")
@@ -132,7 +131,6 @@ public class PlaceController {
     public @ResponseBody ResponseEntity<Place> placeTaken(@RequestBody Position position ){
         Place placeTaken = null;
         try {
-
             User user =(User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             placeTaken = placeService.takePlace(position.getLatitude(), position.getLongitude(), user);
             return new ResponseEntity(placeTaken, new HttpHeaders(), HttpStatus.OK);

@@ -38,22 +38,36 @@ public class UserControllerTest {
     int port;
 
     private User user;
+    private String token;
 
     @Before
     public void setUp() {
 
         user = new User().setUsername("username").setPassword("password");
         //The database is cleared and re-initialized for each test so that we always
-        // validate against a known state
+        //validate against a known state
         userDao.deleteAll();
         userDao.save(user);
 
         RestAssured.port = port;
     }
 
+    public void authenticate(User user){
+        String data= "password="+user.getPassword()+"&username="+user.getUsername()+
+                "&grant_type=password&scope=read write";
+
+        String jsonResponse = given().
+                contentType("application/x-www-form-urlencoded").
+                body(data).
+                auth().preemptive().basic("pmcAndroid", "123456").
+                when().
+                post("/oauth/token").asString();
+        token = new JsonPath(jsonResponse).getString("access_token");
+    }
+
     @After
     public void tearDown(){
-
+        token=null;
     }
 
     @Test
@@ -136,7 +150,20 @@ public class UserControllerTest {
 
                     when().
                             post("/oauth/token").asString();
-
         assertNotNull(new JsonPath(json).getString("access_token"));
+    }
+
+    @Test
+    public void testGetCurrentUser() throws Exception {
+        authenticate(user);
+        given().
+                header("Authorization", "Bearer "+token).
+                contentType(ContentType.JSON).
+        when().
+                get("/rest/users/current").
+        then().
+                statusCode(HttpStatus.SC_OK);
+
+
     }
 }

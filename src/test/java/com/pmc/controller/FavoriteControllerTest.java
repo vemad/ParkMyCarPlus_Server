@@ -74,7 +74,6 @@ public class FavoriteControllerTest {
         token=null;
         favoriteDAO.deleteAll();
         userDao.deleteAll();
-
     }
 
     public void authenticate(User user){

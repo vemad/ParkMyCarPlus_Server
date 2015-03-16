@@ -36,9 +36,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     public User SaveUser(User user) throws UsernameAlreadyUsed, UsernameOrPasswordEmpty, NullPointerException{
-        //TODO Do some refactoring here !!!!!!!!
-
         checkNotNull(user);
+
         //username and password cannot be empty
         if(user.getPassword().isEmpty() || user.getUsername().isEmpty()){
             throw new UsernameOrPasswordEmpty();
