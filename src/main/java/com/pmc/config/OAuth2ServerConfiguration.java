@@ -48,11 +48,10 @@ public class OAuth2ServerConfiguration {
                     .authorizeRequests()
                     .antMatchers("/rest/places/*").authenticated()
                     .antMatchers("/rest/favorites").authenticated()
-                    .antMatchers("/rest/user/current").authenticated().
+                    .antMatchers("/rest/users/current").authenticated().
             and().
                     logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).
-                    invalidateHttpSession(true).
-                    logoutSuccessUrl("/rest/users/logout/success");
+                    invalidateHttpSession(true);
         }
 
     }

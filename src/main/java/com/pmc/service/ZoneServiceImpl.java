@@ -17,7 +17,7 @@ public class ZoneServiceImpl implements ZoneService {
 
     /*Some Parameters*/
     private static final int TIMELAPS_MINUTE = 180;
-    private static final int SCORE_ADDED_WHEN_ZONE = 10;
+    private static final int SCORE_ADDED_WHEN_ZONE_INDICATED = 10;
 
     @Resource
     private ZoneDAO zoneDAO;
@@ -33,7 +33,7 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public Zone save(User user, Zone zone) {
         zone.setDate(new DateTime());
-        userService.addScore(user, SCORE_ADDED_WHEN_ZONE);
+        userService.addScore(user, SCORE_ADDED_WHEN_ZONE_INDICATED);
         return zoneDAO.save(zone);
     }
 
