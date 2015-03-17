@@ -17,13 +17,32 @@ public class ZoneDAOImpl implements ZoneDAOCustom {
     private HibernateTemplate hibernateTemplate;
 
     @Override
-    public List<Zone> findZonesByPosition(double latitude, double longitude, DateTime date, int radius) {
+    public List<Zone> findZonesByPositionAfterDate(double latitude, double longitude, DateTime date, int radius) {
+        return findZonesByPositionBetweenDates(latitude, longitude, date, new DateTime(), radius);
+    }
+
+    @Override
+    public List<Zone> findZonesByPositionBetweenDates(double latitude, double longitude, DateTime dateStart, DateTime dateStop, int radius) {
         //TODO: The request might be optimized
         String request = "FROM Zone WHERE " +
                 radius + " > (" + getRequestDistanceCalculatePart(latitude, longitude) + ")" +
-                " AND '" + new Timestamp(date.getMillis()) + "' < date" ;
+                " AND '" + new Timestamp(dateStart.getMillis()) + "' < date" +
+                " AND '" + new Timestamp(dateStop.getMillis()) + "' > date" ;
         return (List<Zone>)hibernateTemplate.find(request);
     }
+
+    //This methods retrieves all zones declared on the same day of the week and in the interval of an hour.
+    @Override
+    public List<Zone> findZonesOfHourAndDay(double latitude, double longitude, DateTime date, int radius){
+        Timestamp currentDate = new Timestamp(date.getMillis());
+        String request = "FROM Zone WHERE " +
+                radius + " > (" + getRequestDistanceCalculatePart(latitude, longitude) + ")" +
+                " AND WEEKDAY('" + currentDate + "') = WEEKDAY(date)" +
+                " AND HOUR('" + currentDate + "')*60+MINUTE('" + currentDate + "')-30 < HOUR(date)*60+MINUTE(date)" +
+                " AND HOUR('" + currentDate + "')*60+MINUTE('" + currentDate + "')+30 > HOUR(date)*60+MINUTE(date)";
+        return (List<Zone>)hibernateTemplate.find(request);
+    }
+
 
     /* Method to get the part of the request that calculate the distance between each place and a position*/
     private String getRequestDistanceCalculatePart(double latitude, double longitude){
