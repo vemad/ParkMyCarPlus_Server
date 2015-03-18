@@ -52,14 +52,13 @@ public class FavoriteController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody
-    ResponseEntity<Message4Client> deleteFavoriteById(@PathVariable("id") int id) {
+    ResponseEntity<Integer> deleteFavoriteById(@PathVariable("id") int id) {
         try {
             User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             favService.deleteFavoriteById(id, user);
-            String message= "Favorite <"+id+"> deleted";
-            return new ResponseEntity(new Message4Client(message), new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity(id, new HttpHeaders(), HttpStatus.OK);
         }catch (FavoriteNotFound eNotFound){
-            return new ResponseEntity(new Message4Client(eNotFound.getMessage()), new HttpHeaders(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
         }catch (IllegalArgumentException e){
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
