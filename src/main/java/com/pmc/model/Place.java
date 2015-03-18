@@ -8,10 +8,11 @@ import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name="place")
-@JsonIgnoreProperties({"taken", "dateCreation", "dateLastRelease", "dateLastTake"})
+@JsonIgnoreProperties({"taken", "dateCreation"})
 public class Place implements Serializable{
 
     @Id
@@ -52,6 +53,7 @@ public class Place implements Serializable{
 
     public Place(User user){
         this.dateCreation = new DateTime();
+        System.out.println(this.dateCreation);
         this.creator = user;
     }
 
@@ -69,16 +71,18 @@ public class Place implements Serializable{
         return longitude;
     }
 
-    public DateTime getDateCreation() {
-        return dateCreation;
+    public Timestamp getDateCreation() {
+        return new Timestamp(dateCreation.getMillis());
     }
 
-    public DateTime getDateLastRelease() {
-        return dateLastRelease;
+    public Timestamp getDateLastRelease() {
+        if(dateLastRelease == null) return null;
+        return new Timestamp(dateLastRelease.getMillis());
     }
 
-    public DateTime getDateLastTake() {
-        return dateLastTake;
+    public Timestamp getDateLastTake() {
+        if(dateLastRelease == null) return null;
+        return new Timestamp(dateLastTake.getMillis());
     }
 
 
