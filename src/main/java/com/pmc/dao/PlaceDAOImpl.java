@@ -14,6 +14,7 @@ public class PlaceDAOImpl implements PlaceDAOCustom{
     @Autowired
     private HibernateTemplate hibernateTemplate;
 
+    @Override
     public List<Place> findPlacesByPosition(double latitude, double longitude, int radius){
     //TODO: The request might be optimized
         String request = "FROM Place WHERE " +
@@ -21,10 +22,25 @@ public class PlaceDAOImpl implements PlaceDAOCustom{
         return (List<Place>)hibernateTemplate.find(request);
     }
 
+    @Override
     public List<Place> findNearestPlaces(double latitude, double longitude, int maxRadius) { //TODO: optimize request
         String request = "FROM Place WHERE " + getRequestDistanceCalculatePart(latitude, longitude) + "< " + maxRadius +
                         " ORDER BY " +getRequestDistanceCalculatePart(latitude, longitude);// +" LIMIT " + nbPlaces;
         return (List<Place>)hibernateTemplate.find(request);
+    }
+
+    @Override
+    public Double getOccupationRate(double latitude, double longitude, int radius){
+        String request = "SELECT avg(case when isTaken = 1 then 1 else 0 end) FROM Place WHERE " +
+                radius + " > (" + getRequestDistanceCalculatePart(latitude, longitude) + ")";
+        List<Double> listRes = (List<Double>)hibernateTemplate.find(request);
+        if(listRes.isEmpty() || listRes.get(0) == null){
+            return null;
+        }
+        else{
+            return listRes.get(0);
+        }
+
     }
 
     /* Method to get the part of the request that calculate the distance between each place and a position*/

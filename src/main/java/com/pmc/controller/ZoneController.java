@@ -25,7 +25,7 @@ public class ZoneController {
     /**
      *
      */
-    private static final int defaultRadius = 500;
+    private static final int defaultRadius = 144;
 
     /**
      *
