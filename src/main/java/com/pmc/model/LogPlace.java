@@ -12,6 +12,8 @@ import javax.persistence.*;
 public class LogPlace {
     public static enum Action {create, release, take};
 
+    private  static final String EUROPE_PARIS = "Europe/Paris";
+
     @Id
     @Column
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -30,7 +32,8 @@ public class LogPlace {
     private User user;
 
     @Column
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime",
+            parameters = {@org.hibernate.annotations.Parameter(name = "databaseZone", value = EUROPE_PARIS)})
     private DateTime date;
 
     @Column

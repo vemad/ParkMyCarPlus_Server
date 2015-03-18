@@ -15,13 +15,16 @@ import javax.persistence.*;
 @Table(name="zone")
 public class Zone {
 
+    private  static final String EUROPE_PARIS = "Europe/Paris";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private double longitude;
     private double latitude;
 
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime",
+            parameters = {@org.hibernate.annotations.Parameter(name = "databaseZone", value = EUROPE_PARIS)})
     private DateTime date;
 
     @Enumerated(EnumType.STRING)

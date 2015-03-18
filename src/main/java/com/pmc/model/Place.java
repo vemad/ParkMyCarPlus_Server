@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @JsonIgnoreProperties({"taken", "dateCreation"})
 public class Place implements Serializable{
 
-    public static final java.lang.String EUROPE_PARIS = "Europe/Paris";
+    private static final String EUROPE_PARIS = "Europe/Paris";
     @Id
     @Column
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -30,7 +30,8 @@ public class Place implements Serializable{
     private double longitude;
 
 
-    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+    @Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime",
+            parameters = {@org.hibernate.annotations.Parameter(name = "databaseZone", value = EUROPE_PARIS)})
     @Column(name = "date_creation")
     private DateTime dateCreation;
 
@@ -59,8 +60,6 @@ public class Place implements Serializable{
         this.creator = user;
     }
 
-
-
     public int getId() {
         return id;
     }
@@ -83,11 +82,9 @@ public class Place implements Serializable{
     }
 
     public Timestamp getDateLastTake() {
-        if(dateLastRelease == null) return null;
+        if(dateLastTake == null) return null;
         return new Timestamp(dateLastTake.getMillis());
     }
-
-
 
     public Place setLatitude(double latitude) {
         this.latitude = latitude;

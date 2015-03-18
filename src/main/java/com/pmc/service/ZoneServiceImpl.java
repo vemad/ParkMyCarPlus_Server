@@ -40,8 +40,7 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
 
-        //TODO: remove -60 cause by jetlag(timezone)
-        DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE -60);
+        DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE);
         return zoneDAO.findZonesByPosition(latitude, longitude, oldestDate, radius);
     }
 }
