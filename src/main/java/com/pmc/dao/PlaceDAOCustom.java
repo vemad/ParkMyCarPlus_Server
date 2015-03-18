@@ -10,4 +10,5 @@ import java.util.List;
 public interface PlaceDAOCustom {
     public List<Place> findPlacesByPosition(double latitude, double longitude, int radius);
     public List<Place> findNearestPlaces(double latitude, double longitude, int maxRadius);
+    public Double getOccupationRate(double latitude, double longitude, int radius);
 }

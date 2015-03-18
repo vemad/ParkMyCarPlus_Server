@@ -1,5 +1,6 @@
 package com.pmc.service;
 
+import com.pmc.dao.PlaceDAO;
 import com.pmc.dao.ZoneDAO;
 import com.pmc.model.Density;
 import com.pmc.model.User;
@@ -23,9 +24,19 @@ public class ZoneServiceImpl implements ZoneService {
     /*Some Parameters*/
     private static final int TIMELAPS_MINUTE = 60;
     private static final int SCORE_ADDED_WHEN_ZONE = 10;
+    private static final int ZONE_DEFAULT_RADIUS = 24;
+    private static final int EARTH_RADIUS = 5000000;
+    private static final float INTENSITY_LEVEL2 = 0.5f;
+    private static final float INTENSITY_LEVEL3 = 0.2f;
+    private static final int NB_DAY_BEFORE_LEVEL2 = 7;
+    private static final int MIN_AROUND_TIME_LEVEL2 = 30;
+    private static final int JETLAG_BD = -60;
 
     @Resource
     private ZoneDAO zoneDAO;
+
+    @Resource
+    private PlaceDAO placeDAO;
 
     @Resource
     private CustomUserDetailsService userService;
@@ -48,28 +59,31 @@ public class ZoneServiceImpl implements ZoneService {
 
 
         //Zones Level 1:Zones of the last hour (intensity=1)
-        DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE -60); //TODO: remove -60 cause by jetlag(timezone)
+        DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE + JETLAG_BD); //TODO: remove jetlag
         List<Zone> listZoneLevel1 = zoneDAO.findZonesByPositionAfterDate(latitude, longitude, oldestDate, radius);
         for(Zone z:listZoneLevel1){
-            z.setIntensity(1);
+            Double occupationRate = placeDAO.getOccupationRate(z.getLatitude(), z.getLongitude(), ZONE_DEFAULT_RADIUS);
+            Float intensity = calculateIntensityByOccupationRate(occupationRate, z.getDensity());
+            z.setIntensity(intensity);
         }
 
+
         //Zones Level 2: Zones of the previous week the same day around a hour
-        DateTime datePreviousWeekStart = new DateTime().plusMinutes(-30-60).plusDays(-7);//-30 min before
-        DateTime datePreviousWeekStop = new DateTime().plusMinutes(+30-60).plusDays(-7);//+30 min after
+        DateTime datePreviousWeekStart = new DateTime().plusMinutes(-MIN_AROUND_TIME_LEVEL2 + JETLAG_BD).plusDays(-NB_DAY_BEFORE_LEVEL2);//TODO: remove the jetlag with the BD
+        DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2 + JETLAG_BD).plusDays(-NB_DAY_BEFORE_LEVEL2);//TODO: remove the jetlag with the BD
         List<Zone> listZoneLevel2 = zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
         for(Zone z:listZoneLevel2){
-            z.setIntensity(0.5f);
+            z.setIntensity(INTENSITY_LEVEL2);
         }
 
         //Zones Level3: Zones avg on a grid
         List<Zone> listZoneLevel3 = new ArrayList<Zone>();
-        List<Pair<Double, Double>> listPositions = generateGrid(latitude, longitude, radius, 24);
-        DateTime currentDate = new DateTime().plusMinutes(-60);
+        List<Pair<Double, Double>> listPositions = generateGrid(latitude, longitude, radius, ZONE_DEFAULT_RADIUS);
+        DateTime currentDate = new DateTime().plusMinutes(JETLAG_BD);//TODO: remove the jetlag with the BD
         for(Pair<Double, Double> position:listPositions){
-            List<Zone> listZoneAroundPosition = zoneDAO.findZonesOfHourAndDay(position.getKey(), position.getValue(), currentDate, 24);
+            List<Zone> listZoneAroundPosition = zoneDAO.findZonesOfHourAndDay(position.getKey(), position.getValue(), currentDate, ZONE_DEFAULT_RADIUS);
             if(!listZoneAroundPosition.isEmpty()){
-                Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(0.2f).setDensity(calculateAvgDensity(listZoneAroundPosition));
+                Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(calculateAvgDensity(listZoneAroundPosition));
                 listZoneLevel3.add(zone);
             }
         }
@@ -80,6 +94,31 @@ public class ZoneServiceImpl implements ZoneService {
         return listZoneLevel1;
     }
 
+    private Float calculateIntensityByOccupationRate(Double occupationRate, Density zoneDensity){
+        if(occupationRate == null) return 1f;
+
+        Density densityOccupation;
+        if(occupationRate <=1f/3){
+            densityOccupation = Density.LOW;
+        }
+        else if(occupationRate <=2f/3){
+            densityOccupation = Density.MEDIUM;
+        }
+        else{
+            densityOccupation = Density.HIGH;
+        }
+
+
+        if(densityOccupation == zoneDensity){
+            return 1f;
+        }
+        else if(densityOccupation == Density.MEDIUM || zoneDensity == Density.MEDIUM){
+            return 0.8f;
+        }
+        else{
+            return 0.6f;
+        }
+    }
 
     private Density calculateAvgDensity(List<Zone> listZoneAroundPosition){
         int sum=0;
@@ -95,10 +134,10 @@ public class ZoneServiceImpl implements ZoneService {
             }
         }
         double avg = sum/listZoneAroundPosition.size();
-        if(avg<=2/3){
+        if(avg<=2f/3){
             return Density.LOW;
         }
-        else if(avg<=4/3){
+        else if(avg<=4f/3){
             return Density.MEDIUM;
         }
         else{
@@ -130,7 +169,7 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     private Pair<Double, Double> getPosition(double latitude, double longitude, double distance, double direction){
-        double distance2 = distance/5000000;
+        double distance2 = distance/ EARTH_RADIUS;
         double latRad = latitude*Math.PI/180;
         double lonRad = longitude*Math.PI/180;
         double latRadRes= Math.asin(Math.sin(latRad)*Math.cos(distance2)+Math.cos(latRad)*Math.sin(distance2)*Math.cos(direction));
