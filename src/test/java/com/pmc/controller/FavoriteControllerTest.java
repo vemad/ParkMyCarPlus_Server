@@ -148,7 +148,8 @@ public class FavoriteControllerTest {
         when().
                 delete("/rest/favorites/{id}", fav1.getId()).
         then().
-                statusCode(HttpStatus.SC_OK);
+                statusCode(HttpStatus.SC_OK).
+                body("message", is("Favorite <" + fav1.getId() + "> deleted"));
 
     }
 
@@ -162,7 +163,8 @@ public class FavoriteControllerTest {
         when().
                 delete("/rest/favorites/{id}", 100).
         then().
-                statusCode(HttpStatus.SC_NOT_FOUND);
+                statusCode(HttpStatus.SC_NOT_FOUND).
+                body("message", is("Favorite not found"));
 
     }
 }
