@@ -14,6 +14,9 @@ public class Position {
         this.longitude = longitude;
     }
 
+    public Position() {
+    }
+
     public Position setLatitude(double latitude) {
         this.latitude = latitude;
         return this;
