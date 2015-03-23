@@ -5,6 +5,8 @@ import com.pmc.dao.ZoneDAO;
 import com.pmc.model.Density;
 import com.pmc.model.User;
 import com.pmc.model.Zone;
+import com.util.Position;
+
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.util.Pair;
 
 /**
  * Created by stephaneki on 04/03/15.
@@ -52,6 +53,7 @@ public class ZoneServiceImpl implements ZoneService {
         return zoneDAO.save(zone);
     }
 
+
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
 
@@ -75,10 +77,10 @@ public class ZoneServiceImpl implements ZoneService {
 
         //Zones Level3: Zones avg on a grid
         List<Zone> listZoneLevel3 = new ArrayList<Zone>();
-        List<Pair<Double, Double>> listPositions = generateGrid(latitude, longitude, radius, ZONE_DEFAULT_RADIUS);
+        List<Position> listPositions = generateGrid(latitude, longitude, radius, ZONE_DEFAULT_RADIUS);
         DateTime currentDate = new DateTime();
-        for(Pair<Double, Double> position:listPositions){
-            List<Zone> listZoneAroundPosition = zoneDAO.findZonesOfHourAndDay(position.getKey(), position.getValue(), currentDate, ZONE_DEFAULT_RADIUS);
+        for(Position position:listPositions){
+            List<Zone> listZoneAroundPosition = zoneDAO.findZonesOfHourAndDay(position.getLatitude(), position.getLongitude(), currentDate, ZONE_DEFAULT_RADIUS);
             if(!listZoneAroundPosition.isEmpty()){
                 Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(calculateAvgDensity(listZoneAroundPosition));
                 listZoneLevel3.add(zone);
@@ -142,10 +144,10 @@ public class ZoneServiceImpl implements ZoneService {
         }
     }
 
-    private List<Pair<Double, Double>> generateGrid(double latitude, double longitude, int size, double gap){
-        List<Pair<Double, Double>> listPositions = new ArrayList<Pair<Double, Double>>();
+    private List<Position> generateGrid(double latitude, double longitude, int size, double gap){
+        List<Position> listPositions = new ArrayList<Position>();
         //Add center of the grid
-        listPositions.add(new Pair<Double, Double>(latitude, longitude));
+        listPositions.add(new Position(latitude, longitude));
 
         int nbPointAround = Math.round(new Float((size/2)/gap));
         for(int i=1; i<=nbPointAround; i++){
@@ -157,21 +159,21 @@ public class ZoneServiceImpl implements ZoneService {
         for(int i=0; i<nbPointAround*2+1; i++){
             for(int j=1; j<=nbPointAround; j++){
                 //Points on the top
-                listPositions.add(getPosition(listPositions.get(i).getKey(), listPositions.get(i).getValue(), i*gap, 0));
+                listPositions.add(getPosition(listPositions.get(i).getLatitude(), listPositions.get(i).getLongitude(), i*gap, 0));
                 //Points on the bottom
-                listPositions.add(getPosition(listPositions.get(i).getKey(), listPositions.get(i).getValue(), i*gap, Math.PI));
+                listPositions.add(getPosition(listPositions.get(i).getLatitude(), listPositions.get(i).getLongitude(), i*gap, Math.PI));
             }
         }
         return listPositions;
     }
 
-    private Pair<Double, Double> getPosition(double latitude, double longitude, double distance, double direction){
+    private Position getPosition(double latitude, double longitude, double distance, double direction){
         double distance2 = distance/ EARTH_RADIUS;
         double latRad = latitude*Math.PI/180;
         double lonRad = longitude*Math.PI/180;
         double latRadRes= Math.asin(Math.sin(latRad)*Math.cos(distance2)+Math.cos(latRad)*Math.sin(distance2)*Math.cos(direction));
         double lonRadTmp = Math.atan2(Math.sin(direction)*Math.sin(distance2)*Math.cos(latRad), Math.cos(distance2) - Math.sin(latRad)*Math.sin(latRadRes));
         double lonRadRes = ((lonRad-lonRadTmp+Math.PI)%(2*Math.PI))-Math.PI;
-        return new Pair<Double, Double>(latRadRes*180/Math.PI, lonRadRes*180/Math.PI);
+        return new Position(latRadRes*180/Math.PI, lonRadRes*180/Math.PI);
     }
 }

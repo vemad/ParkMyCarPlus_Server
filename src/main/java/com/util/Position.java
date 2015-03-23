@@ -9,6 +9,11 @@ public class Position {
     protected double latitude;
     protected double longitude;
 
+    public Position(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public Position setLatitude(double latitude) {
         this.latitude = latitude;
         return this;
@@ -26,5 +31,6 @@ public class Position {
     public double getLongitude() {
         return longitude;
     }
+
 
 }
