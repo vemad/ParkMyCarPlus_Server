@@ -84,6 +84,15 @@ HINT: You can build your project without running your tests
 sudo gradle build -x test
 ```
 
+HINT: You should fix your server timeZone if needed !
+```sh 
+sudo dpkg-reconfigure tzdata
+```
+If your system does not have tzdata, install it as below:
+```sh
+sudo aptitude install tzdata
+```
+
 You can run the server with the command `gradle run`.
 To stop it, use `Ctrl+C`.
 
