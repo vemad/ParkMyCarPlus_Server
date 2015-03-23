@@ -25,12 +25,12 @@ public class ZoneController {
     /**
      *
      */
-    private static final int defaultRadius = 144;
+    private static final int DEFAULT_RADIUS = 144;
 
     /**
      *
      */
-    private static final int maxRadius = 5000;
+    private static final int MAX_RADIUS = 5000;
 
     @Resource
     private ZoneService zoneService;
@@ -85,14 +85,10 @@ public class ZoneController {
                                                           @RequestParam(value="longitude") double longitude,
                                                           @RequestParam(value="radius", defaultValue="0") int radius){
 
-        if(radius<1 || radius>maxRadius) radius = defaultRadius;
+        if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
         try{
-            //TODO calculate intensity
             List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
-            for(int i=0; i<listZone.size(); i++){
-                listZone.get(i).setIntensity(1.0f);
-            }
             return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
             System.err.println(e.getMessage());
