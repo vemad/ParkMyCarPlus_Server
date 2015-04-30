@@ -43,7 +43,7 @@ public class UserControllerTest {
     @Before
     public void setUp() {
 
-        user = new User().setUsername("username").setPassword("password");
+        user = new User().setUsername("username").setPassword("password").setMacAddress("");
         //The database is cleared and re-initialized for each test so that we always
         //validate against a known state
         userDao.deleteAll();

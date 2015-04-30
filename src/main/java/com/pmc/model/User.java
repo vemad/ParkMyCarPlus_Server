@@ -39,6 +39,8 @@ public class User implements UserDetails {
 
 	private int score;
 
+    private String macAddress;
+
     public int getId() {
         return id;
     }
@@ -66,6 +68,13 @@ public class User implements UserDetails {
     public Place getPlace() { return takenPlace; }
 
     public int getScore() { return this.score; }
+
+    public String getMacAddress() { return this.macAddress; }
+
+    public User setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
+        return this;
+    }
 
     public User takePlace(Place place) {
         this.takenPlace = place;

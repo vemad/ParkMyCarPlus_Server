@@ -67,4 +67,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         user.addScore(value);
         userDao.save(user);
     }
+
+    public void changeMacAddress(User user, String macAddress){
+        user.setMacAddress(macAddress);
+        userDao.save(user);
+    }
 }
