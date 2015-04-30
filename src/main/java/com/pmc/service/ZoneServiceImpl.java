@@ -8,6 +8,7 @@ import com.pmc.model.Zone;
 import com.util.Position;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -52,6 +53,86 @@ public class ZoneServiceImpl implements ZoneService {
         userService.addScore(user, SCORE_ADDED_WHEN_ZONE);
         return zoneDAO.save(zone);
     }
+
+    public boolean isZoneALike (List<Zone> zonesalike, Density densit) {
+        if (zonesalike.size()<3) {
+            return true;
+        }
+        else{
+            float moyenne=0.0f;
+            float val=0.0f;
+            for(Zone z:zonesalike){
+                 if(z.getDensity()==Density.LOW)
+                    moyenne+=0.0f;
+                 else if(z.getDensity()==Density.MEDIUM)
+                    moyenne+=1.0f;
+                 else if(z.getDensity()==Density.HIGH)
+                    moyenne+=2.0f;
+            }
+            moyenne/=zonesalike.size();
+
+            if(densit==Density.LOW)
+                val=0.0f;
+            else if(densit==Density.MEDIUM)
+                val=1.0f;
+            else if(densit==Density.HIGH)
+                val=2.0f;
+
+            if(val-moyenne>1.0f)
+                return false;
+
+
+            return true;
+
+        }
+    }
+
+    public List<Zone> getZoneAlike(double latitude, double longitude) {
+        DateTime currentDate = new DateTime();
+        MutableDateTime dateStart;
+        DateTime dateStartPeriod =  new DateTime();
+        if(((currentDate.getHourOfDay())>= 1 )&&( currentDate.getHourOfDay() < 7))
+        {
+            dateStart = currentDate.toMutableDateTime();
+            dateStart.setHourOfDay(0);
+            dateStartPeriod =dateStart.toDateTime();
+
+        }
+        else if(((currentDate.getHourOfDay()>= 7)&&( currentDate.getMinuteOfDay() <=555))||((currentDate.getMinuteOfDay() >=720)&&(currentDate.getMinuteOfDay() <=855))||((currentDate.getMinuteOfDay() >=1020)&&(currentDate.getMinuteOfDay() <=1155))) {
+            currentDate = currentDate.minusMinutes(15);
+        }
+        else if((currentDate.getHourOfDay() >=10 && currentDate.getHourOfDay() < 12)||(currentDate.getHourOfDay() >=20 && currentDate.getHourOfDay() <= 23)||(currentDate.getHourOfDay() >=0 && currentDate.getHourOfDay() < 1)){
+            currentDate = currentDate.minusHours(1);
+        }
+        else if(( currentDate.getMinuteOfDay() >555) && ( currentDate.getMinuteOfDay() <600)){
+            dateStart = currentDate.toMutableDateTime();
+            dateStart.setHourOfDay(9);
+            dateStartPeriod =dateStart.toDateTime();
+
+
+        }
+        else if(( currentDate.getMinuteOfDay() >855) && ( currentDate.getMinuteOfDay() <1020)){
+            dateStart = currentDate.toMutableDateTime();
+            dateStart.setHourOfDay(14);
+            dateStartPeriod =dateStart.toDateTime();
+
+
+        }
+        else if(( currentDate.getMinuteOfDay() >1155) && ( currentDate.getMinuteOfDay() <1200)){
+            dateStart = currentDate.toMutableDateTime();
+            dateStart.setHourOfDay(19);
+            dateStartPeriod =dateStart.toDateTime();
+
+
+        }
+
+        List<Zone> listZoneAroundPosition = zoneDAO.findZonesByPositionBetweenDates( latitude,  longitude,  dateStartPeriod,  currentDate,  127);
+
+
+
+        return listZoneAroundPosition;
+    }
+
 
 
     @Override
