@@ -137,7 +137,7 @@ public class PlaceControllerTest {
 
     }
 
-    @Test
+    /*@Test
     @Ignore //Sub queries issues in hsqlbd (need some readings to fix it)
     public void conflictStatusSentIfPlaceAlreadyReleased() throws Exception {
         String pos="{ \"latitude\" : "+freePlace.getLatitude()+"," +
@@ -172,7 +172,7 @@ public class PlaceControllerTest {
                 post("/rest/places/taken").
         then().
                 statusCode(HttpStatus.SC_CONFLICT);
-    }
+    }*/
 
     @Test
     public void canDeleteAPlaceByItsId() throws Exception {

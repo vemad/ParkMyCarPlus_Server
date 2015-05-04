@@ -82,7 +82,7 @@ public class UserControllerTest {
         when().
                 post("/rest/users/signup").
         then().
-                statusCode(HttpStatus.SC_OK).
+                statusCode(HttpStatus.SC_CREATED). // SC_OK dans PMC
                 body("message", is("New user created"));
     }
 
