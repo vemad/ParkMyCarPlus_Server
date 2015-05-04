@@ -38,12 +38,8 @@ public class User implements UserDetails {
     private Place takenPlace;
 
 	private int score;
-
-<<<<<<< HEAD
     private int confianceScore;
-=======
     private String macAddress;
->>>>>>> 0f3f9a8f9f992bdc20ce0917aeaccca458d24219
 
     public int getId() {
         return id;
@@ -72,17 +68,13 @@ public class User implements UserDetails {
     public Place getPlace() { return takenPlace; }
 
     public int getScore() { return this.score; }
-
-<<<<<<< HEAD
     public int getConfianceScore() { return this.confianceScore; }
-=======
     public String getMacAddress() { return this.macAddress; }
 
     public User setMacAddress(String macAddress) {
         this.macAddress = macAddress;
         return this;
     }
->>>>>>> 0f3f9a8f9f992bdc20ce0917aeaccca458d24219
 
     public User takePlace(Place place) {
         this.takenPlace = place;
