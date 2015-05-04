@@ -39,6 +39,8 @@ public class User implements UserDetails {
 
 	private int score;
 
+    private int confianceScore;
+
     public int getId() {
         return id;
     }
@@ -67,6 +69,8 @@ public class User implements UserDetails {
 
     public int getScore() { return this.score; }
 
+    public int getConfianceScore() { return this.confianceScore; }
+
     public User takePlace(Place place) {
         this.takenPlace = place;
         return this;
@@ -80,6 +84,10 @@ public class User implements UserDetails {
     public void addScore(int value){
         this.score += value;
         if(this.score<0) this.score = 0;
+    }
+
+    public void addConfianceScore(int value){
+        this.confianceScore += value;
     }
 
     @JsonProperty

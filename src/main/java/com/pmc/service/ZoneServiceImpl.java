@@ -78,7 +78,7 @@ public class ZoneServiceImpl implements ZoneService {
             else if(densit==Density.HIGH)
                 val=2.0f;
 
-            if(val-moyenne>1.0f)
+            if(val-moyenne>1.5f)
                 return false;
 
 
