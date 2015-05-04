@@ -51,6 +51,17 @@ public class ZoneServiceImpl implements ZoneService {
     public Zone save(User user, Zone zone) {
         zone.setDate(new DateTime());
         userService.addScore(user, SCORE_ADDED_WHEN_ZONE);
+        if(user.getConfianceScore()<0){
+            zone.setIntensity(0f);
+        }
+        else if(user.getConfianceScore() >=15){
+            zone.setIntensity(1f);
+        }
+        else {
+            float intensity = user.getConfianceScore()/15;
+            zone.setIntensity(intensity);
+        }
+
         return zoneDAO.save(zone);
     }
 
@@ -140,12 +151,7 @@ public class ZoneServiceImpl implements ZoneService {
 
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
-        List<Zone> listZoneLevel1 = zoneDAO.findZonesByPositionAfterDate(latitude, longitude, oldestDate, radius);
-        for(Zone z:listZoneLevel1){
-            Double occupationRate = placeDAO.getOccupationRate(z.getLatitude(), z.getLongitude(), ZONE_DEFAULT_RADIUS);
-            Float intensity = calculateIntensityByOccupationRate(occupationRate, z.getDensity());
-            z.setIntensity(intensity);
-        }
+        List<Zone> listZoneLevel1 = getZoneAlike(latitude, longitude);
 
 
         //Zones Level 2: Zones of the previous week the same day around a hour
