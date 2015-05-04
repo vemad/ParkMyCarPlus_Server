@@ -68,8 +68,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         userDao.save(user);
     }
 
-    public void addConfianceScore(User user, int value){
+    public void addConfianceScore(User user, int value) {
         user.addConfianceScore(value);
+        userDao.save(user);
+    }
+    public void changeMacAddress(User user, String macAddress){
+        user.setMacAddress(macAddress);
         userDao.save(user);
     }
 }
