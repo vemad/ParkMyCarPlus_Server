@@ -150,13 +150,16 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
-        System.out.println("allo0");
+        DateTime datePreviousWeekStart = new DateTime().plusMinutes(-MIN_AROUND_TIME_LEVEL2 ).plusDays(-NB_DAY_BEFORE_LEVEL2);
+        DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2).plusDays(-NB_DAY_BEFORE_LEVEL2);
+        return zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
+       /* System.out.println("allo0");
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
         List<Zone> listZoneLevel1 = getZoneAlike(latitude, longitude);
         System.out.println("allo1");
 
-        //Zones Level 2: Zones of the previous week the same day around a hour
+        Zones Level 2: Zones of the previous week the same day around a hour
         DateTime datePreviousWeekStart = new DateTime().plusMinutes(-MIN_AROUND_TIME_LEVEL2 ).plusDays(-NB_DAY_BEFORE_LEVEL2);
         DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2).plusDays(-NB_DAY_BEFORE_LEVEL2);
         List<Zone> listZoneLevel2 = zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
@@ -184,7 +187,7 @@ public class ZoneServiceImpl implements ZoneService {
         //Aggregate all list
         listZoneLevel1.addAll(listZoneLevel2);
         listZoneLevel1.addAll(listZoneLevel3);
-        return listZoneLevel1;
+        return listZoneLevel1;*/
     }
 
     private Float calculateIntensityByOccupationRate(Double occupationRate, Density zoneDensity){
