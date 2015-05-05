@@ -68,6 +68,7 @@ public class ZoneServiceImpl implements ZoneService {
 
     public boolean isZoneALike (List<Zone> zonesalike, Density densit) {
         if (zonesalike==null ||zonesalike.size()<3) {
+            System.out.println("allo cest vide ou moins de 3");
             return true;
         }
         else{
@@ -153,7 +154,7 @@ public class ZoneServiceImpl implements ZoneService {
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
         List<Zone> listZoneLevel1 = getZoneAlike(latitude, longitude);
-
+        System.out.println("allo1");
 
         //Zones Level 2: Zones of the previous week the same day around a hour
         DateTime datePreviousWeekStart = new DateTime().plusMinutes(-MIN_AROUND_TIME_LEVEL2 ).plusDays(-NB_DAY_BEFORE_LEVEL2);
@@ -167,7 +168,7 @@ public class ZoneServiceImpl implements ZoneService {
                 z.setIntensity(0.0f);
             }
         }
-
+        System.out.println("allo2");
         //Zones Level3: Zones avg on a grid
         List<Zone> listZoneLevel3 = new ArrayList<Zone>();
         List<Position> listPositions = generateGrid(latitude, longitude, radius, ZONE_DEFAULT_RADIUS);
