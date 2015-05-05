@@ -77,6 +77,7 @@ public class ZoneController {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 userService.addConfianceScore(user, CONFIANCESCORE_ADDED_WHEN_ZONEALIKE);
                 if(true||user.getConfianceScore()>0) {
+                    System.out.println("coucou");
                     return new ResponseEntity(zoneService.save(user, zone), new HttpHeaders(), HttpStatus.OK);
                 }
                 else{
