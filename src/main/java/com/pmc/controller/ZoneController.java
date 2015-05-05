@@ -123,7 +123,7 @@ public class ZoneController {
             return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
             System.out.println("exeption petit");
-            System.err.println(e.getMessage());
+           // System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
