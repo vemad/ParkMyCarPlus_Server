@@ -159,7 +159,12 @@ public class ZoneServiceImpl implements ZoneService {
         DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2).plusDays(-NB_DAY_BEFORE_LEVEL2);
         List<Zone> listZoneLevel2 = zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
         for(Zone z:listZoneLevel2){
-            z.setIntensity(INTENSITY_LEVEL2);
+            if(z.getItensity()>=0.65) {
+                z.setIntensity(INTENSITY_LEVEL2);
+            }
+            else{
+                z.setIntensity(0.0f);
+            }
         }
 
         //Zones Level3: Zones avg on a grid
@@ -167,7 +172,7 @@ public class ZoneServiceImpl implements ZoneService {
         List<Position> listPositions = generateGrid(latitude, longitude, radius, ZONE_DEFAULT_RADIUS);
         DateTime currentDate = new DateTime();
         for(Position position:listPositions){
-            List<Zone> listZoneAroundPosition = zoneDAO.findZonesOfHourAndDay(position.getLatitude(), position.getLongitude(), currentDate, ZONE_DEFAULT_RADIUS);
+            List<Zone> listZoneAroundPosition = getZoneAlike(position.getLatitude(), position.getLongitude());
             if(!listZoneAroundPosition.isEmpty()){
                 Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(calculateAvgDensity(listZoneAroundPosition));
                 listZoneLevel3.add(zone);
