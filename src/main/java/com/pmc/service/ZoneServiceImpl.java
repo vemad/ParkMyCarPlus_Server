@@ -150,10 +150,9 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
-        DateTime datePreviousWeekStart = new DateTime().plusMinutes(-MIN_AROUND_TIME_LEVEL2 ).plusDays(-NB_DAY_BEFORE_LEVEL2);
-        DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2).plusDays(-NB_DAY_BEFORE_LEVEL2);
-        return zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
-       /* System.out.println("allo0");
+        System.out.println("allo0");
+        return zoneDAO.allZones();
+       /*
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
         List<Zone> listZoneLevel1 = getZoneAlike(latitude, longitude);
