@@ -58,6 +58,7 @@ public class ZoneController {
         }catch (IllegalArgumentException e){
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);}
         catch (Exception e){
+            System.out.println("allo");
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -114,7 +115,7 @@ public class ZoneController {
 
         if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
-        try{
+        try{System.out.println("hole");
             List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
             return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
