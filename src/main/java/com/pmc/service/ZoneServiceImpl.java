@@ -160,7 +160,7 @@ public class ZoneServiceImpl implements ZoneService {
         DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2).plusDays(-NB_DAY_BEFORE_LEVEL2);
         List<Zone> listZoneLevel2 = zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
         for(Zone z:listZoneLevel2){
-            if(z.getItensity()>=0.65) {
+            if(z.getIntensity()>=0.65) {
                 z.setIntensity(INTENSITY_LEVEL2);
             }
             else{

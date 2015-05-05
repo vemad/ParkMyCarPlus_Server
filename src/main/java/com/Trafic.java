@@ -13,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import org.json.*;
 import javax.net.ssl.HttpsURLConnection;
@@ -22,6 +23,62 @@ import javax.net.ssl.HttpsURLConnection;
  */
 
 public class Trafic {
+
+    private static void createZones() throws Exception {
+
+        // Acceder à la base, données trafic
+        String json = catchData();
+
+        // Récupérer la liste des rues bouchées
+        getBlockedStreets(json);
+
+        // Parcourir les rues bouchées et les pilloner de zones rouges
+        ArrayList<String> rues = new ArrayList<String>();
+        drawZonesStreet(rues);
+    }
+
+    public static String catchData() {
+
+        String jsonResult = null;
+
+        try {
+            URL remoteUrl = new URL("https://download.data.grandlyon.com/ws/rdata/pvo_patrimoine_voirie.pvotrafic/all.json?maxfeatures=10000");
+
+            HttpsURLConnection remoteServer = (HttpsURLConnection) remoteUrl.openConnection();
+            remoteServer.setDoInput(true);
+            remoteServer.setRequestMethod("POST");
+            //remoteServer.setRequestProperty("Content-type", "text/html");
+            remoteServer.setRequestProperty("user-agent", "LIRIS_DATA Platform");
+            remoteServer.setRequestProperty("Authorization", "Basic TWFyaWFuLlNjdXR1cmljaUBpbnNhLWx5b24uZnI6YmFiYTIxNDM=");
+            remoteServer.connect();
+            String ligne = null;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(remoteServer.getInputStream()));
+            while ((ligne = reader.readLine()) != null) {
+                jsonResult += ligne.trim() + "\n";
+            }
+        } catch (Exception e) {
+            //on s'occupe des exceptions
+
+        }
+        return jsonResult;
+    }
+
+    private static ArrayList<String> getBlockedStreets(String json) {
+
+        ArrayList<String> blockedStreetsList = new ArrayList<String>();
+        JSONObject jObj = new JSONObject(json);
+        JSONArray values = jObj.getJSONArray("values");
+        for (int i = 0 ; i < values.length() ; ++i) {
+            JSONArray item = values.getJSONArray(i);
+            String etat = item.getString(8);
+            if (etat == "R"){
+                blockedStreetsList.add(item.getString(2));
+            }
+        }
+
+        return blockedStreetsList;
+    }
+
 
     private static Position adressToPosition(String adresse) throws Exception {
 
@@ -122,18 +179,7 @@ public class Trafic {
         return adresse;
     }
 
-    private static void createZones() throws Exception {
-
-        // Acceder à la base, données trafic
-
-        // Récupérer la liste des rues bouchées
-
-        // Parcourir les rues bouchées et les pilloner de zones rouges
-        String[] rues = {"Rue Exemple"};
-        drawZonesStreet(rues);
-    }
-
-    private static void drawZonesStreet(String[] rues) throws Exception {
+    private static void drawZonesStreet(ArrayList<String> rues) throws Exception {
 
         for (String rue : rues) {
 
