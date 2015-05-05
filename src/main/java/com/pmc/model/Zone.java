@@ -50,7 +50,8 @@ public class Zone {
         return density;
     }
 
-    public float getItensity() {
+
+    public float getIntensity() {
         return intensity;
     }
 
