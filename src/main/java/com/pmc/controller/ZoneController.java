@@ -112,11 +112,13 @@ public class ZoneController {
     public ResponseEntity<List<Zone>> listZonesByPosition(@RequestParam(value="latitude") double latitude,
                                                           @RequestParam(value="longitude") double longitude,
                                                           @RequestParam(value="radius", defaultValue="0") int radius){
-
+        System.out.println(latitude);
+        System.out.println(longitude);
         if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
         try{System.out.println("hole");
             List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            System.out.println("hole2");
             return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
             System.err.println(e.getMessage());
