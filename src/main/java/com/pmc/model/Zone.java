@@ -50,6 +50,10 @@ public class Zone {
         return density;
     }
 
+    public float getItensity() {
+        return intensity;
+    }
+
     public Zone setLatitude(double latitude) {
         this.latitude = latitude;
         return this;
