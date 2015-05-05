@@ -117,9 +117,10 @@ public class ZoneController {
         if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
         try{System.out.println("hole");
-            List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
-            System.out.println("hole2");
-            return new ResponseEntity(listZone, HttpStatus.OK);
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+           // List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            //System.out.println("hole2");
+           // return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
