@@ -20,6 +20,12 @@ public class ZoneDAOImpl implements ZoneDAOCustom {
     public List<Zone> findZonesByPositionAfterDate(double latitude, double longitude, DateTime date, int radius) {
         return findZonesByPositionBetweenDates(latitude, longitude, date, new DateTime(), radius);
     }
+    @Override
+    public List<Zone> allZones() {
+        //TODO: The request might be optimized
+        String request = "FROM Zone";
+        return (List<Zone>)hibernateTemplate.find(request);
+    }
 
     @Override
     public List<Zone> findZonesByPositionBetweenDates(double latitude, double longitude, DateTime dateStart, DateTime dateStop, int radius) {
