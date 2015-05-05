@@ -12,6 +12,7 @@ import org.joda.time.MutableDateTime;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Null;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ZoneServiceImpl implements ZoneService {
     }
 
     public boolean isZoneALike (List<Zone> zonesalike, Density densit) {
-        if (zonesalike.size()<3) {
+        if (zonesalike==null ||zonesalike.size()<3) {
             return true;
         }
         else{
