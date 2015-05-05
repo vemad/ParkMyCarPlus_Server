@@ -120,10 +120,10 @@ public class ZoneController {
 
             List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
             System.out.println("hole2");
-            return new ResponseEntity(listZone, HttpStatus.OK);
+            return new ResponseEntity(listZone, new HttpHeaders(), HttpStatus.OK);
         }catch (Exception e){
             System.out.println("exeption petit");
-           // System.err.println(e.getMessage());
+            System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
