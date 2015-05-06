@@ -65,16 +65,16 @@ public class Trafic {
 
     private static ArrayList<String> getBlockedStreets(String json) {
 
-        ArrayList<String> blockedStreetsList = new ArrayList<String>();
-        JSONObject jObj = new JSONObject(json);
-        JSONArray values = jObj.getJSONArray("values");
-        for (int i = 0 ; i < values.length() ; ++i) {
-            JSONArray item = values.getJSONArray(i);
-            String etat = item.getString(8);
-            if (etat == "R"){
-                blockedStreetsList.add(item.getString(2));
+            ArrayList<String> blockedStreetsList = new ArrayList<String>();
+            JSONObject jObj = new JSONObject(json);
+            JSONArray values = jObj.getJSONArray("values");
+            for (int i = 0 ; i < values.length() ; ++i) {
+                JSONArray item = values.getJSONArray(i);
+                String etat = item.getString(8);
+                if (etat.equals("R")){
+                    blockedStreetsList.add(item.getString(2));
+                }
             }
-        }
 
         return blockedStreetsList;
     }
@@ -121,9 +121,10 @@ public class Trafic {
         JSONArray arr = jObj.getJSONArray("results");
         JSONObject item = arr.getJSONObject(0);
         JSONObject geometry = item.getJSONObject("geometry");
+        JSONObject location = geometry.getJSONObject("location");
 
-        double latitude = geometry.getDouble("lat");
-        double longitude = geometry.getDouble("lng");
+        double latitude = location.getDouble("lat");
+        double longitude = location.getDouble("lng");
 
         Position positionCorrespondante = new Position();
         positionCorrespondante.setLatitude(latitude);
@@ -174,7 +175,7 @@ public class Trafic {
         JSONObject jObj = new JSONObject(response.toString());
         JSONArray arr = jObj.getJSONArray("results");
         JSONObject item = arr.getJSONObject(0);
-        String adresse = item.getString("formatted_adress");
+        String adresse = item.getString("formatted_address");
 
         return adresse;
     }
