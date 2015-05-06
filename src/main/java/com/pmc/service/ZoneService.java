@@ -12,4 +12,5 @@ public interface ZoneService {
     public Zone getById(int id);
     public Zone save(User user, Zone zone);
     public List<Zone> getZones(double latitude, double longitude, int radius);
+    public List<Zone> getAllZones();
 }
