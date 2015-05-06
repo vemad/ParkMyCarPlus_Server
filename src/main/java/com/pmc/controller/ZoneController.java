@@ -2,10 +2,7 @@ package com.pmc.controller;
 
 import com.pmc.model.User;
 import com.pmc.model.Zone;
-import com.pmc.service.CustomUserDetailsService;
 import com.pmc.service.ZoneService;
-import com.pmc.service.ZoneServiceImpl;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +26,14 @@ public class ZoneController {
      *
      */
     private static final int DEFAULT_RADIUS = 144;
-    private static final int CONFIANCESCORE_ADDED_WHEN_ZONENOTALIKE=-5;
-    private static final int CONFIANCESCORE_ADDED_WHEN_ZONEALIKE=1;
+
     /**
      *
      */
     private static final int MAX_RADIUS = 5000;
 
     @Resource
-    private CustomUserDetailsService userService;
     private ZoneService zoneService;
-    private ZoneServiceImpl zoneServiceImpl;
 
     /**
      * Find a zone by its id
@@ -70,34 +64,14 @@ public class ZoneController {
      */
     @RequestMapping(value = "/indicate", method = RequestMethod.POST)
     public ResponseEntity<Zone> indicateZone(@RequestBody Zone zone) {
+        try{
+            User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return new ResponseEntity(zoneService.save(user, zone), new HttpHeaders(), HttpStatus.OK);
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        if(zoneServiceImpl.isZoneALike(zoneServiceImpl.getZoneAlike(zone.getLatitude(),zone.getLongitude()),zone.getDensity()))
-        {
-            try {
-                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                userService.addConfianceScore(user, CONFIANCESCORE_ADDED_WHEN_ZONEALIKE);
-                if(user.getConfianceScore()>0) {
-                    return new ResponseEntity(zoneService.save(user, zone), new HttpHeaders(), HttpStatus.OK);
-                }
-                else{
-                    return new ResponseEntity(null, new HttpHeaders(), HttpStatus.OK);
-                }
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        else{
-            try {
-                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                userService.addConfianceScore(user, CONFIANCESCORE_ADDED_WHEN_ZONENOTALIKE);
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.OK);
-            }
-            catch (Exception e) {
-                System.err.println(e.getMessage());
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
     }
 
     /**
@@ -114,6 +88,7 @@ public class ZoneController {
         if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
         try{
+            System.out.println("hey");
             List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
             return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
