@@ -49,6 +49,7 @@ public class ZoneController {
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
      public ResponseEntity<Zone> findZoneById(@PathVariable("id") int id) {
         try{
+            System.out.println("je find zone by id");
             Zone zone=zoneService.getById(id);
             HttpStatus status = HttpStatus.OK;
             if (zone==null){

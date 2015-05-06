@@ -52,6 +52,7 @@ public class ZoneServiceImpl implements ZoneService {
     public Zone save(User user, Zone zone) {
         zone.setDate(new DateTime());
         userService.addScore(user, SCORE_ADDED_WHEN_ZONE);
+        /*
         if(user.getConfianceScore()<0){
             zone.setIntensity(0f);
         }
@@ -62,7 +63,7 @@ public class ZoneServiceImpl implements ZoneService {
             float intensity = user.getConfianceScore()/15;
             zone.setIntensity(intensity);
         }
-
+        */
         return zoneDAO.save(zone);
     }
 
@@ -150,6 +151,7 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
+        System.out.println("allo1");
         List<Zone> listZoneLevel1 = new ArrayList<Zone>();
         Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(Density.HIGH);
         listZoneLevel1.add(zone);
