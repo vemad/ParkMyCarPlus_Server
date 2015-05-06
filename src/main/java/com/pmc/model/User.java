@@ -38,8 +38,6 @@ public class User implements UserDetails {
     private Place takenPlace;
 
 	private int score;
-    private int confianceScore;
-    private String macAddress;
 
     public int getId() {
         return id;
@@ -68,13 +66,6 @@ public class User implements UserDetails {
     public Place getPlace() { return takenPlace; }
 
     public int getScore() { return this.score; }
-    public int getConfianceScore() { return this.confianceScore; }
-    public String getMacAddress() { return this.macAddress; }
-
-    public User setMacAddress(String macAddress) {
-        this.macAddress = macAddress;
-        return this;
-    }
 
     public User takePlace(Place place) {
         this.takenPlace = place;
@@ -89,10 +80,6 @@ public class User implements UserDetails {
     public void addScore(int value){
         this.score += value;
         if(this.score<0) this.score = 0;
-    }
-
-    public void addConfianceScore(int value){
-        this.confianceScore += value;
     }
 
     @JsonProperty

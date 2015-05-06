@@ -40,18 +40,6 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value ="/changemacaddress", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<Message4Client> changeMacAddress(@RequestBody User user) {
-        try{
-
-            userService.SaveUser(user);
-            return new ResponseEntity(new Message4Client("Mac address changed"), new HttpHeaders(), HttpStatus.OK);
-        }catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @RequestMapping(value ="/current", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<User> getUser(){
         User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

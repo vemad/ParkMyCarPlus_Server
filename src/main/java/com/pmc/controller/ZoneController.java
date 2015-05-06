@@ -1,12 +1,8 @@
 package com.pmc.controller;
 
-import com.pmc.model.Density;
 import com.pmc.model.User;
 import com.pmc.model.Zone;
-import com.pmc.service.CustomUserDetailsService;
 import com.pmc.service.ZoneService;
-import com.pmc.service.ZoneServiceImpl;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,15 +26,13 @@ public class ZoneController {
      *
      */
     private static final int DEFAULT_RADIUS = 144;
-    private static final int CONFIANCESCORE_ADDED_WHEN_ZONENOTALIKE=-5;
-    private static final int CONFIANCESCORE_ADDED_WHEN_ZONEALIKE=1;
+
     /**
      *
      */
     private static final int MAX_RADIUS = 5000;
 
     @Resource
-    private CustomUserDetailsService userService;
     private ZoneService zoneService;
 
     /**
@@ -51,7 +43,6 @@ public class ZoneController {
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
      public ResponseEntity<Zone> findZoneById(@PathVariable("id") int id) {
         try{
-            System.out.println("je find zone by id");
             Zone zone=zoneService.getById(id);
             HttpStatus status = HttpStatus.OK;
             if (zone==null){
@@ -61,7 +52,6 @@ public class ZoneController {
         }catch (IllegalArgumentException e){
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);}
         catch (Exception e){
-            System.out.println("allo");
             System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -74,35 +64,14 @@ public class ZoneController {
      */
     @RequestMapping(value = "/indicate", method = RequestMethod.POST)
     public ResponseEntity<Zone> indicateZone(@RequestBody Zone zone) {
+        try{
+            User user =(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return new ResponseEntity(zoneService.save(user, zone), new HttpHeaders(), HttpStatus.OK);
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+            return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        if(true||zoneService.isZoneALike(zoneService.getZoneAlike(zone.getLatitude(),zone.getLongitude()),zone.getDensity()))
-        {
-            try {
-                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                userService.addConfianceScore(user, CONFIANCESCORE_ADDED_WHEN_ZONEALIKE);
-                if(true||user.getConfianceScore()>0) {
-                    System.out.println("coucou");
-                    return new ResponseEntity(zoneService.save(user, zone), new HttpHeaders(), HttpStatus.OK);
-                }
-                else{
-                    return new ResponseEntity(null, new HttpHeaders(), HttpStatus.OK);
-                }
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        else{
-            try {
-                User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                userService.addConfianceScore(user, CONFIANCESCORE_ADDED_WHEN_ZONENOTALIKE);
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.OK);
-            }
-            catch (Exception e) {
-                System.err.println(e.getMessage());
-                return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
     }
 
     /**
@@ -115,21 +84,14 @@ public class ZoneController {
     public ResponseEntity<List<Zone>> listZonesByPosition(@RequestParam(value="latitude") double latitude,
                                                           @RequestParam(value="longitude") double longitude,
                                                           @RequestParam(value="radius", defaultValue="0") int radius){
-        System.out.println(latitude);
-        System.out.println(longitude);
+
         if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
-        try{System.out.println("hole");
-
-            //List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
-            List<Zone> listZone = new ArrayList<Zone>();
-            Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(0.5f).setDensity(Density.HIGH);
-            listZone.add(zone);
-            System.out.println("hole2");
-            return new ResponseEntity(listZone, new HttpHeaders(), HttpStatus.OK);
+        try{
+            List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
-            System.out.println("exeption petit");
-            System.err.println("c'est bien lui"+e.getMessage());
+            System.err.println(e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

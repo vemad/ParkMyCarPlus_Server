@@ -8,15 +8,12 @@ import com.pmc.model.Zone;
 import com.util.Position;
 
 import org.joda.time.DateTime;
-import org.joda.time.MutableDateTime;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.Null;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.google.common.collect.Lists;
 
 
 /**
@@ -46,152 +43,44 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public Zone getById(int id) {
-        System.out.println("attttttt");
         return zoneDAO.findOne(id);
     }
 
     @Override
-    public List<Zone> getAllZones() {
-
-        List<Zone> myList = Lists.newArrayList(zoneDAO.findAll());
-        return myList;
-    }
-
-    @Override
     public Zone save(User user, Zone zone) {
-        System.out.println("alloooooo");
         zone.setDate(new DateTime());
         userService.addScore(user, SCORE_ADDED_WHEN_ZONE);
-        /*
-        if(user.getConfianceScore()<0){
-            zone.setIntensity(0f);
-        }
-        else if(user.getConfianceScore() >=15){
-            zone.setIntensity(1f);
-        }
-        else {
-            float intensity = user.getConfianceScore()/15;
-            zone.setIntensity(intensity);
-        }
-        */
         return zoneDAO.save(zone);
     }
-    @Override
-    public boolean isZoneALike (List<Zone> zonesalike, Density densit) {
-        System.out.println("allo cest vide ou moins de 3");
-        if (zonesalike==null ||zonesalike.size()<3) {
-
-            return true;
-        }
-        else{
-            float moyenne=0.0f;
-            float val=0.0f;
-            for(Zone z:zonesalike){
-                 if(z.getDensity()==Density.LOW)
-                    moyenne+=0.0f;
-                 else if(z.getDensity()==Density.MEDIUM)
-                    moyenne+=1.0f;
-                 else if(z.getDensity()==Density.HIGH)
-                    moyenne+=2.0f;
-            }
-            moyenne/=zonesalike.size();
-
-            if(densit==Density.LOW)
-                val=0.0f;
-            else if(densit==Density.MEDIUM)
-                val=1.0f;
-            else if(densit==Density.HIGH)
-                val=2.0f;
-
-            if(val-moyenne>1.5f)
-                return false;
-
-
-            return true;
-
-        }
-    }
-    @Override
-    public List<Zone> getZoneAlike(double latitude, double longitude) {
-        DateTime currentDate = new DateTime();
-        MutableDateTime dateStart;
-        DateTime dateStartPeriod =  new DateTime();
-        if(((currentDate.getHourOfDay())>= 1 )&&( currentDate.getHourOfDay() < 7))
-        {
-            dateStart = currentDate.toMutableDateTime();
-            dateStart.setHourOfDay(0);
-            dateStartPeriod =dateStart.toDateTime();
-
-        }
-        else if(((currentDate.getHourOfDay()>= 7)&&( currentDate.getMinuteOfDay() <=555))||((currentDate.getMinuteOfDay() >=720)&&(currentDate.getMinuteOfDay() <=855))||((currentDate.getMinuteOfDay() >=1020)&&(currentDate.getMinuteOfDay() <=1155))) {
-            currentDate = currentDate.minusMinutes(15);
-        }
-        else if((currentDate.getHourOfDay() >=10 && currentDate.getHourOfDay() < 12)||(currentDate.getHourOfDay() >=20 && currentDate.getHourOfDay() <= 23)||(currentDate.getHourOfDay() >=0 && currentDate.getHourOfDay() < 1)){
-            currentDate = currentDate.minusHours(1);
-        }
-        else if(( currentDate.getMinuteOfDay() >555) && ( currentDate.getMinuteOfDay() <600)){
-            dateStart = currentDate.toMutableDateTime();
-            dateStart.setHourOfDay(9);
-            dateStartPeriod =dateStart.toDateTime();
-
-
-        }
-        else if(( currentDate.getMinuteOfDay() >855) && ( currentDate.getMinuteOfDay() <1020)){
-            dateStart = currentDate.toMutableDateTime();
-            dateStart.setHourOfDay(14);
-            dateStartPeriod =dateStart.toDateTime();
-
-
-        }
-        else if(( currentDate.getMinuteOfDay() >1155) && ( currentDate.getMinuteOfDay() <1200)){
-            dateStart = currentDate.toMutableDateTime();
-            dateStart.setHourOfDay(19);
-            dateStartPeriod =dateStart.toDateTime();
-
-
-        }
-
-        List<Zone> listZoneAroundPosition = zoneDAO.findZonesByPositionBetweenDates( latitude,  longitude,  dateStartPeriod,  currentDate,  127);
-
-
-
-        return listZoneAroundPosition;
-    }
-
 
 
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
-        System.out.println("allo1");
-        List<Zone> listZoneLevel1 = new ArrayList<Zone>();
-        Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(Density.HIGH);
-        listZoneLevel1.add(zone);
-        return listZoneLevel1;
-       /*
+
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
-        List<Zone> listZoneLevel1 = getZoneAlike(latitude, longitude);
-        System.out.println("allo1");
+        List<Zone> listZoneLevel1 = zoneDAO.findZonesByPositionAfterDate(latitude, longitude, oldestDate, radius);
+        for(Zone z:listZoneLevel1){
+            Double occupationRate = placeDAO.getOccupationRate(z.getLatitude(), z.getLongitude(), ZONE_DEFAULT_RADIUS);
+            Float intensity = calculateIntensityByOccupationRate(occupationRate, z.getDensity());
+            z.setIntensity(intensity);
+        }
 
-        Zones Level 2: Zones of the previous week the same day around a hour
+
+        //Zones Level 2: Zones of the previous week the same day around a hour
         DateTime datePreviousWeekStart = new DateTime().plusMinutes(-MIN_AROUND_TIME_LEVEL2 ).plusDays(-NB_DAY_BEFORE_LEVEL2);
         DateTime datePreviousWeekStop = new DateTime().plusMinutes(+MIN_AROUND_TIME_LEVEL2).plusDays(-NB_DAY_BEFORE_LEVEL2);
         List<Zone> listZoneLevel2 = zoneDAO.findZonesByPositionBetweenDates(latitude, longitude, datePreviousWeekStart, datePreviousWeekStop, radius);
         for(Zone z:listZoneLevel2){
-            if(z.getIntensity()>=0.65) {
-                z.setIntensity(INTENSITY_LEVEL2);
-            }
-            else{
-                z.setIntensity(0.0f);
-            }
+            z.setIntensity(INTENSITY_LEVEL2);
         }
-        System.out.println("allo2");
+
         //Zones Level3: Zones avg on a grid
         List<Zone> listZoneLevel3 = new ArrayList<Zone>();
         List<Position> listPositions = generateGrid(latitude, longitude, radius, ZONE_DEFAULT_RADIUS);
         DateTime currentDate = new DateTime();
         for(Position position:listPositions){
-            List<Zone> listZoneAroundPosition = getZoneAlike(position.getLatitude(), position.getLongitude());
+            List<Zone> listZoneAroundPosition = zoneDAO.findZonesOfHourAndDay(position.getLatitude(), position.getLongitude(), currentDate, ZONE_DEFAULT_RADIUS);
             if(!listZoneAroundPosition.isEmpty()){
                 Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(calculateAvgDensity(listZoneAroundPosition));
                 listZoneLevel3.add(zone);
@@ -201,7 +90,7 @@ public class ZoneServiceImpl implements ZoneService {
         //Aggregate all list
         listZoneLevel1.addAll(listZoneLevel2);
         listZoneLevel1.addAll(listZoneLevel3);
-        return listZoneLevel1;*/
+        return listZoneLevel1;
     }
 
     private Float calculateIntensityByOccupationRate(Double occupationRate, Density zoneDensity){
