@@ -74,7 +74,7 @@ public class ZoneServiceImpl implements ZoneService {
         */
         return zoneDAO.save(zone);
     }
-
+    @Override
     public boolean isZoneALike (List<Zone> zonesalike, Density densit) {
         if (zonesalike==null ||zonesalike.size()<3) {
             System.out.println("allo cest vide ou moins de 3");
@@ -108,7 +108,7 @@ public class ZoneServiceImpl implements ZoneService {
 
         }
     }
-
+    @Override
     public List<Zone> getZoneAlike(double latitude, double longitude) {
         DateTime currentDate = new DateTime();
         MutableDateTime dateStart;

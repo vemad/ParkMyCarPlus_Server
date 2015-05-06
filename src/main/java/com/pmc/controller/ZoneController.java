@@ -39,7 +39,6 @@ public class ZoneController {
     @Resource
     private CustomUserDetailsService userService;
     private ZoneService zoneService;
-    private ZoneServiceImpl zoneServiceImpl;
 
     /**
      * Find a zone by its id
@@ -73,7 +72,7 @@ public class ZoneController {
     @RequestMapping(value = "/indicate", method = RequestMethod.POST)
     public ResponseEntity<Zone> indicateZone(@RequestBody Zone zone) {
 
-        if(true||zoneServiceImpl.isZoneALike(zoneServiceImpl.getZoneAlike(zone.getLatitude(),zone.getLongitude()),zone.getDensity()))
+        if(true||zoneService.isZoneALike(zoneService.getZoneAlike(zone.getLatitude(),zone.getLongitude()),zone.getDensity()))
         {
             try {
                 User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -119,7 +118,7 @@ public class ZoneController {
 
         try{System.out.println("hole");
 
-            List<Zone> listZone = zoneServiceImpl.getZones(latitude, longitude, radius);
+            List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
             System.out.println("hole2");
             return new ResponseEntity(listZone, new HttpHeaders(), HttpStatus.OK);
         }catch (Exception e){
