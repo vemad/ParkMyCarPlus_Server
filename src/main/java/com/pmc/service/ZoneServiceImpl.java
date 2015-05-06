@@ -150,8 +150,10 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
-        System.out.println("allo0");
-        return zoneDAO.allZones();
+        List<Zone> listZoneLevel1 = new ArrayList<Zone>();
+        Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(Density.HIGH);
+        listZoneLevel1.add(zone);
+        return listZoneLevel1;
        /*
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
