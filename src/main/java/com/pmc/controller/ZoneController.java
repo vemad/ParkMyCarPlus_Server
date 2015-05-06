@@ -1,5 +1,6 @@
 package com.pmc.controller;
 
+import com.pmc.model.Density;
 import com.pmc.model.User;
 import com.pmc.model.Zone;
 import com.pmc.service.CustomUserDetailsService;
@@ -13,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -118,7 +121,10 @@ public class ZoneController {
 
         try{System.out.println("hole");
 
-            List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            //List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            List<Zone> listZone = new ArrayList<Zone>();
+            Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(0.5f).setDensity(Density.HIGH);
+            listZone.add(zone);
             System.out.println("hole2");
             return new ResponseEntity(listZone, new HttpHeaders(), HttpStatus.OK);
         }catch (Exception e){
