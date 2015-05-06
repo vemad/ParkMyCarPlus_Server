@@ -88,6 +88,7 @@ public class ZoneController {
         if(radius<1 || radius> MAX_RADIUS) radius = DEFAULT_RADIUS;
 
         try{
+            System.out.println("hey");
             List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
             return new ResponseEntity(listZone, HttpStatus.OK);
         }catch (Exception e){
