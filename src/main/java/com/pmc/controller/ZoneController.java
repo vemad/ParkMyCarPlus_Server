@@ -119,12 +119,12 @@ public class ZoneController {
 
         try{System.out.println("hole");
 
-            List<Zone> listZone = zoneService.getZones(latitude, longitude, radius);
+            List<Zone> listZone = zoneServiceImpl.getZones(latitude, longitude, radius);
             System.out.println("hole2");
             return new ResponseEntity(listZone, new HttpHeaders(), HttpStatus.OK);
         }catch (Exception e){
             System.out.println("exeption petit");
-            System.err.println(e.getMessage());
+            System.err.println("c'est bien lui"+e.getMessage());
             return new ResponseEntity(null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
