@@ -17,7 +17,7 @@ public class UserService {
     private CustomUserDetailsService userService;
 
     public User save(User user, String macAddress) {
-        userService.changeMacAddress(user, macAddress);
+      //  userService.changeMacAddress(user, macAddress);
         return userDAO.save(user);
     }
 }
