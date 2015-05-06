@@ -46,6 +46,7 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public Zone getById(int id) {
+        System.out.println("attttttt");
         return zoneDAO.findOne(id);
     }
 
@@ -58,6 +59,7 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public Zone save(User user, Zone zone) {
+        System.out.println("alloooooo");
         zone.setDate(new DateTime());
         userService.addScore(user, SCORE_ADDED_WHEN_ZONE);
         /*
@@ -76,8 +78,9 @@ public class ZoneServiceImpl implements ZoneService {
     }
     @Override
     public boolean isZoneALike (List<Zone> zonesalike, Density densit) {
+        System.out.println("allo cest vide ou moins de 3");
         if (zonesalike==null ||zonesalike.size()<3) {
-            System.out.println("allo cest vide ou moins de 3");
+
             return true;
         }
         else{
@@ -160,10 +163,10 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     public List<Zone> getZones(double latitude, double longitude, int radius) {
         System.out.println("allo1");
-       // List<Zone> listZoneLevel1 = new ArrayList<Zone>();
-        //Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(Density.HIGH);
-        //listZoneLevel1.add(zone);
-        return getAllZones();
+        List<Zone> listZoneLevel1 = new ArrayList<Zone>();
+        Zone zone = new Zone().setLatitude(latitude).setLongitude(longitude).setIntensity(INTENSITY_LEVEL3).setDensity(Density.HIGH);
+        listZoneLevel1.add(zone);
+        return listZoneLevel1;
        /*
         //Zones Level 1:Zones of the last hour (intensity=1)
         DateTime oldestDate = new DateTime().plusMinutes(-TIMELAPS_MINUTE );
